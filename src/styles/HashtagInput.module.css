@@ -1,0 +1,16 @@
+.wrapper {
+    display: flex;
+}
+
+.section {
+    height: var(--input-height);
+    width: fit-content;
+    position: static;
+    margin-inline-end: var(--mantine-spacing-xs);
+}
+
+.input {
+    padding-inline: 0;
+    border: none;
+    color: var(--mantine-color-blue-5);
+}

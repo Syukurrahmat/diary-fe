@@ -1,0 +1,27 @@
+.inspect>* {
+    border: 1px solid red;
+}
+
+.borderedModalHeader {
+    border-block-end: 1px solid var(--mantine-color-gray-2)
+}
+
+.borderedModalFooter {
+    border-block-start: 1px solid var(--mantine-color-gray-2)
+}
+
+.pagesAsSlideWrapper>* {
+    max-width: 100%;
+}
+ 
+.map-marker-centered {
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 44px;
+    height: 44px;
+    position: absolute;
+    z-index: 500;
+    left: calc(50% - 22px);
+    top: calc(50% - 42px);
+    transition: all 0.4s ease;
+}

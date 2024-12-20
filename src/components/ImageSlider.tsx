@@ -1,83 +1,77 @@
-import { Image as Img } from '@mantine/core';
-import { useEffect, useState } from 'react';
+import { Box, Image as Img } from '@mantine/core';
 
+import { ReactNode } from 'react';
 import { SwiperSlide } from 'swiper/react';
 import MySwiperSlider from '../components/MySlider';
 
-const ggg = [
-	'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQB6em8bBiDFn_p0jcA1n1zoPk1hocoXxCG_w&s',
-	'https://www.industrialempathy.com/img/remote/ZiClJf-1920w.jpg',
-	'https://media.istockphoto.com/id/184395916/photo/peace-sign.jpg?s=612x612&w=0&k=20&c=xGdRDTUcKGMzYWFwRGWewfWdHgRvndA5dN0ye6TA5ac=',
-	'https://www.industrialempathy.com/img/remote/ZiClJf-1920w.jpg',
-];
+interface ImageWrapper {
+	images: EntryImageData[];
+	fluid?: boolean;
+}
 
-export default function ImageWrapper({
-	imageUrls = ggg,
-}: {
-	imageUrls?: string[];
-}) {
-	const [height, setHeight] = useState(0);
+export default function ImageSlider({ images, fluid }: ImageWrapper) {
+	if (images.length == 0) return null;
+	const isSingle = images.length == 1;
 
-	useEffect(() => {
-		findTallestImage(imageUrls).then((h) => {
-			setHeight(h > 300 ? 300 : h);
-		});
-	}, [imageUrls]);
+	const isAllPortrait = images.every(({ width, height }) => height > width);
+	const isAllLanscape = images.every(({ width, height }) => height <= width);
 
-	if (!height) return null;
+	const height =
+		(isAllPortrait ? 250 : isAllLanscape ? 200 : 225) +
+		(isSingle ? 100 : 0) +
+		'px';
 
-	const getSlideItemStyle = (index: number) => ({
-		marginInlineStart:
-			index == 0 ? 'calc(2 * var(--mantine-spacing-md))' : undefined,
-		marginInlineEnd:
-			index == imageUrls.length - 1
-				? 'calc(var(--mantine-spacing-md))'
-				: undefined,
+	const getSlideItemStyle = (i: number) => ({
+		marginInlineStart: i == 0 ? 'calc(var(--mantine-spacing-md) + var(--mantine-spacing-lg))' : undefined, //prettier-ignore
+		marginInlineEnd: i == images.length - 1 ? 'calc(var(--mantine-spacing-md))' : undefined, //prettier-ignore
 		width: 'fit-content',
-		height: '300px',
+		minWidth: '200px',
+		maxWidth: 'calc(100% - 3 * var(--mantine-spacing-md))',
+		aspectRatio: isSingle ? images[i].width / images[i].height : undefined,
+		height: height,
 	});
 
 	return (
-		<MySwiperSlider spaceBetween={8}>
-			{imageUrls.map((e, i) => (
-				<SwiperSlide key={i} style={getSlideItemStyle(i)}>
-					<Img
-						fit="cover"
-						radius="md"
-						maw="100%"
-						h="100%"
-						bd="1px solid gray.4"
-						src={e}
-					/>
-				</SwiperSlide>
-			))}
-		</MySwiperSlider>
+		<Box component={fluid ? Jsjsjs : undefined} fluidHeight={height}>
+			<MySwiperSlider spaceBetween={8}>
+				{images.map((e, i) => (
+					<SwiperSlide key={i} style={getSlideItemStyle(i)}>
+						<Img
+							fit="cover"
+							radius="md"
+							w="100%"
+							h="100%"
+							bd="1px solid gray.4"
+							src={e.imageUrl}
+							style={{}}
+							bg='white'
+						/>
+					</SwiperSlide>
+				))}
+			</MySwiperSlider>
+		</Box>
 	);
 }
 
-async function findTallestImage(imageUrls: string[]) {
-	if (!imageUrls.length) return 0;
-
-	let maxHeight = 0;
-
-	await Promise.all(
-		imageUrls.map((url) => {
-			return new Promise((resolve) => {
-				const img = new Image();
-				img.src = url; // Set URL gambar
-
-				img.onload = function () {
-					// Jika tinggi gambar lebih besar dari maxHeight, perbarui
-					if (img.height > maxHeight) {
-						maxHeight = img.height;
-					}
-					resolve(null);
-				};
-				img.onerror = function () {
-					resolve(null); // Tetap resolve meskipun terjadi kesalahan
-				};
-			});
-		})
+function Jsjsjs({
+	children,
+	fluidHeight,
+}: {
+	children: ReactNode;
+	fluidHeight?: string;
+}) {
+	return (
+		<Box h={fluidHeight}>
+			<Box
+				pos="absolute"
+				w="calc(100% + var(--mantine-spacing-md) + var(--mantine-spacing-lg))"
+				h="fluidHeight"
+				left="calc(-1*var(--mantine-spacing-lg))"
+				style={{
+					zIndex: 10,
+				}}
+				children={children}
+			/>
+		</Box>
 	);
-	return maxHeight;
 }

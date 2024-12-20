@@ -3,6 +3,7 @@ import {
 	Box,
 	Button,
 	Group,
+	Stack,
 	TextInput,
 	Title,
 } from '@mantine/core';
@@ -14,8 +15,8 @@ export default function DatetimeSection({
 	onChangeSection,
 }: ICreateFormSection) {
 	return (
-		<Box>
-			<Box p="md">
+		<Stack gap='0' h='100%'>
+			<Box p="md" flex='1'>
 				<Group gap="xs" wrap="nowrap">
 					<ActionIcon
 						variant="subtle"
@@ -48,9 +49,17 @@ export default function DatetimeSection({
 					/>
 				</Group>
 			</Box>
-			<Group pos="sticky" bottom={0} bg="white" p="sm" justify="end" pt="0">
+			<Group
+				className="borderedModalFooter"
+				pos="sticky"
+				bottom={0}
+				bg="white"
+				p="sm"
+				justify="end"
+				pt="md"
+			>
 				<Button onClick={() => onChangeSection('main')} children="Oke" />
 			</Group>
-		</Box>
+		</Stack>
 	);
 }

@@ -14,7 +14,10 @@ export default function MySwiperSlider(props: SwiperProps) {
 				momentumRatio: 0.5,
 				minimumVelocity: 0.01,
 			}}
-			mousewheel
+			mousewheel={{
+				forceToAxis : true,
+				enabled : true
+			}}
 			style={{
 				userSelect: 'none',
 			}}

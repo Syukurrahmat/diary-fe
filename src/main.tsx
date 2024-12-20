@@ -1,4 +1,3 @@
-import '@mantine/carousel/styles.css';
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import { createRoot } from 'react-dom/client';
@@ -14,8 +13,13 @@ import Home from './pages/Home.tsx';
 import { SWRConfig } from 'swr';
 import { fetcher } from './lib/fetcher.ts';
 
+import 'moment/dist/locale/id'
+import moment from 'moment';
+import Calender from './pages/Calender.tsx';
+
+moment.locale('id')
+
 const theme = createTheme({
-	fontFamily: 'Inter, system-ui, Avenir, Helvetica, Arial, sans-serif',
 	defaultRadius: 'md',
 });
 
@@ -27,7 +31,7 @@ const router = () =>
 			children: [
 				{ path: '/', element: <Home /> },
 				// { path: '/create', element: <CreateNoteDrawer /> },
-				{ path: '/calendar', element: 'calender' },
+				{ path: '/calendar', element: <Calender/> },
 				{ path: '/profile', element: 'profile' },
 				{ path: '/tracker', element: 'tracker' },
 			],

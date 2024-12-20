@@ -1,5 +1,6 @@
 import {
 	AppShell,
+	Burger,
 	Button,
 	Group,
 	NavLink,
@@ -7,6 +8,7 @@ import {
 	Stack,
 	Text,
 	ThemeIcon,
+	Title,
 	useMantineTheme,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
@@ -59,17 +61,35 @@ const navListLeft = [
 ];
 
 function Layout() {
-	const [opened, { open, close }] = useDisclosure(false);
+	const [createOpened, { open: openCreate, close: closeCreate }] = useDisclosure(false); //prettier-ignore
+	const [opened, { toggle }] = useDisclosure();
 	const theme = useMantineTheme();
 
 	return (
 		<AppShell
 			navbar={{
 				width: 200,
-				breakpoint: 'xs',
+				breakpoint: 'sm',
+
+				collapsed: { mobile: !opened },
 			}}
+			// header={{ height: 60 }}
 			bg="#fafafa"
+			layout="alt"
 		>
+			{/* <AppShell.Header bd='none'>
+				<Group h="60" p="sm">
+					<Burger
+						opened={opened}
+						onClick={toggle}
+						hiddenFrom="sm"
+						size="sm"
+					/>
+					<Title size="h3" component="h1">
+						Journal
+					</Title>
+				</Group>
+			</AppShell.Header> */}
 			<AppShell.Main>
 				<Outlet />
 			</AppShell.Main>
@@ -104,12 +124,15 @@ function Layout() {
 						</NavLinkRouter>
 					))}
 					<Space />
-					<Button onClick={open} leftSection={<PlusIcon size="20" />}>
+					<Button
+						onClick={openCreate}
+						leftSection={<PlusIcon size="20" />}
+					>
 						Buat Catatan
 					</Button>
 				</Stack>
 			</AppShell.Navbar>
-			<CreateNoteModal opened={opened} close={close} />
+			<CreateNoteModal opened={createOpened} close={closeCreate} />
 		</AppShell>
 	);
 }

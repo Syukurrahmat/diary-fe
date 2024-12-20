@@ -60,8 +60,8 @@ export default function LocationSection({
 	}, [currentAddress, currentCoord, form]);
 
 	return (
-		<Box pos="relative">
-			<Box h="330" pos="relative">
+		<Stack gap="0" h="100%" pos="relative">
+			<Box flex="1"  pos="relative">
 				<Box
 					className="map-marker-centered"
 					style={{ backgroundImage: `url(${pinMap})` }}
@@ -93,7 +93,7 @@ export default function LocationSection({
 				</Group>
 				<Button onClick={() => onChangeSection('main')} children="Oke" />
 			</Stack>
-		</Box>
+		</Stack>
 	);
 }
 
@@ -114,7 +114,9 @@ function MapSearchAutoComplete({
 		data,
 		isLoading,
 		mutate: mutateQuery,
-	} = useSWR<PlaceItem[]>(`/geocoding/search?q=${debouncedQuery}`);
+	} = useSWR<PlaceItem[]>(
+		debouncedQuery.length > 1 ? `/geocoding/search?q=${debouncedQuery}` : null
+	);
 
 	const combobox = useCombobox({
 		onDropdownClose: () => combobox.resetSelectedOption(),

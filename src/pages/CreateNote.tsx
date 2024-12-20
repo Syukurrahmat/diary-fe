@@ -6,9 +6,9 @@ import { useEffect, useState } from 'react';
 import DatetimeSection from '../components/CreateEntry/DatetimeSection';
 import LocationSection from '../components/CreateEntry/LocationSection';
 import MainSection from '../components/CreateEntry/MainSection';
-import { getUserLocation } from '../lib/hooks';
-import { reverseCoordinate, filetoBase64 } from '../lib/utils';
 import { myAxios } from '../lib/fetcher';
+import { getUserLocation } from '../lib/hooks';
+import { filetoBase64, reverseCoordinate } from '../lib/utils';
 
 interface CreateNoteDrawer {
 	opened: boolean;
@@ -26,6 +26,18 @@ type SubmitValue = {
 export default function CreateNoteModal({ opened, close }: CreateNoteDrawer) {
 	const [section, setSection] = useState<CreateEntryFormSection>('main');
 	const [allowInitialMotion, setAllowInitialMotion] = useState(false);
+	const [height, setHeight] = useState(window.visualViewport!.height);
+
+	useEffect(() => {
+		function handleResize() {
+			setHeight(window.visualViewport!.height);
+		}
+		window.visualViewport?.addEventListener('resize', handleResize);
+		handleResize();
+		return () => {
+			window.visualViewport?.removeEventListener('resize', handleResize);
+		};
+	}, []);
 
 	const initialValues = {
 		images: [],
@@ -46,8 +58,8 @@ export default function CreateNoteModal({ opened, close }: CreateNoteDrawer) {
 
 		const submitValue: SubmitValue = {
 			content,
-			location: coordinate && [coordinate.lat, coordinate.lng],
 			tags,
+			location: coordinate && [coordinate.lat, coordinate.lng],
 			datetime: moment(`${date} ${time}`, 'YYYY-MM-DD HH:mm:').toDate(),
 			images: await Promise.all(images.map(filetoBase64)),
 		};
@@ -62,7 +74,7 @@ export default function CreateNoteModal({ opened, close }: CreateNoteDrawer) {
 			if (!e) return;
 			const address = await reverseCoordinate(e);
 			form.setFieldValue('coordinate', e);
-			form.setFieldValue('coordinateLabel', address.display_name);
+			form.setFieldValue('coordinateLabel', address.displayName);
 		});
 	}, []);
 
@@ -80,6 +92,7 @@ export default function CreateNoteModal({ opened, close }: CreateNoteDrawer) {
 		animate: { x: 0, opacity: 1 },
 		transition: { duration: 0.3 },
 		key: key,
+		style: { flex: 1 },
 	});
 
 	return (
@@ -97,6 +110,8 @@ export default function CreateNoteModal({ opened, close }: CreateNoteDrawer) {
 					display: 'flex',
 					flexDirection: 'column',
 					overflow: 'hidden',
+					height: height + 'px',
+					transition: 'all 250ms',
 				},
 				body: { padding: 0, flex: '1' },
 				header: {
@@ -104,7 +119,7 @@ export default function CreateNoteModal({ opened, close }: CreateNoteDrawer) {
 				},
 			}}
 		>
-			<Stack component="form" gap="0" h="100%">
+			<Stack component="form" gap="0" h="100%" bd="1px solid red">
 				<AnimatePresence mode="popLayout">
 					{section === 'main' && (
 						<motion.div {...getmotionProps('main')}>

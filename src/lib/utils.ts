@@ -1,3 +1,4 @@
+import moment, { Moment } from "moment";
 
 export const getReverseCoordinateUrl = ({ lat, lng }: MyLatLng) => `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&zoom=13&normalizeaddress=0&oceans=1&accept-language=id&format=json`
 export const getAutocompletePlaceUrl = (query: string) => `https://nominatim.openstreetmap.org/search?q=${query}&format=json&limit=5`
@@ -24,3 +25,9 @@ export const filetoBase64 = (file: File) => new Promise<string>((resolve, reject
     reader.onload = () => resolve(reader.result as string);
     reader.onerror = reject;
 });
+
+export const relativeDay = (date: Date | Moment | string) => {
+    const diff = moment().diff(date, 'day')
+
+    return diff == 0 ? 'Hari Ini' : diff == 1 ? 'Kemaren' : diff == 2 ? 'Lusa' : moment(date).format('DD MMM YYYY')
+}

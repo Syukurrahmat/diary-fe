@@ -25,8 +25,8 @@ export default function MainSection({
 	const formValues = form.getValues();
 
 	return (
-		<Box>
-			<Box p="md">
+		<Stack gap="0" h="100%">
+			<Box p="md" flex="1">
 				<Stack gap="0" mb="xs">
 					<Button
 						mb="4"
@@ -119,7 +119,6 @@ export default function MainSection({
 						onBlur={() => {
 							if (!formValues.tags.length) setTagsOpen(false);
 						}}
-						
 					/>
 				</Collapse>
 			</Box>
@@ -169,6 +168,6 @@ export default function MainSection({
 					<Button onClick={onSubmit}>Buat</Button>
 				</Group>
 			</Box>
-		</Box>
+		</Stack>
 	);
 }

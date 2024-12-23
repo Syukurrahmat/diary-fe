@@ -14,9 +14,12 @@ export default function DatetimeSection({
 	form,
 	onChangeSection,
 }: ICreateFormSection) {
+	form.watch('date', () => form.setFieldValue('datetimeEdited', true));
+	form.watch('time', () => form.setFieldValue('datetimeEdited', true));
+
 	return (
-		<Stack gap='0' h='100%'>
-			<Box p="md" flex='1'>
+		<Stack gap="0" h="100%">
+			<Box p="md" flex="1">
 				<Group gap="xs" wrap="nowrap">
 					<ActionIcon
 						variant="subtle"

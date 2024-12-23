@@ -4,8 +4,11 @@ type CreateEntryForm = {
     time: string;
     images: File[];
     tags: string[];
-    coordinateLabel?: string,
+    address?: string,
     coordinate?: MyLatLng
+
+    coordinateEdited : boolean,
+    datetimeEdited : boolean
 };
 
 type MyLatLng = {

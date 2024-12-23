@@ -1,7 +1,7 @@
 import { FreeMode, Mousewheel } from 'swiper/modules';
 import { Swiper, SwiperProps } from 'swiper/react';
 
-export default function MySwiperSlider(props: SwiperProps) {
+export default function MySwiper(props: SwiperProps) {
 	return (
 		<Swiper
 			slidesPerView="auto"

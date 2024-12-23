@@ -7,6 +7,7 @@ import {
 	ActionIcon,
 	Box,
 	Button,
+	Center,
 	Combobox,
 	Group,
 	Loader,
@@ -56,12 +57,17 @@ export default function LocationSection({
 
 	useEffect(() => {
 		form.setFieldValue('coordinate', currentCoord);
-		form.setFieldValue('coordinateLabel', currentAddress?.displayName || '');
-	}, [currentAddress, currentCoord, form]);
+		form.setFieldValue('coordinateEdited', true);
+	}, [currentCoord]);
+
+	useEffect(() => {
+		form.setFieldValue('address', currentAddress?.displayName || '');
+		form.setFieldValue('coordinateEdited', true);
+	}, [currentAddress]);
 
 	return (
-		<Stack gap="0" h="100%" pos="relative">
-			<Box flex="1"  pos="relative">
+		<Stack gap="0" h="500px" pos="relative">
+			<Box flex="1" pos="relative">
 				<Box
 					className="map-marker-centered"
 					style={{ backgroundImage: `url(${pinMap})` }}
@@ -79,17 +85,19 @@ export default function LocationSection({
 				)}
 			</Box>
 			<Stack bg="white" p="sm" align="end">
-				<Group gap="sm" wrap="nowrap" w="100%">
+				<Group gap="sm" wrap="nowrap" w="100%" align="center">
 					<ThemeIcon
 						variant="light"
 						size="lg"
 						children={<MapPin size="22" />}
 					/>
-					<Text size="sm" lineClamp={2}>
-						{isGraping
-							? 'Lepaskan penanda untuk mendapatkan alamat'
-							: currentAddress?.displayName || 'Mengambil data...'}
-					</Text>
+					<Center h="2lh">
+						<Text size="sm" lineClamp={2}>
+							{isGraping
+								? 'Lepaskan penanda untuk mendapatkan alamat'
+								: currentAddress?.displayName || 'Mengambil data...'}
+						</Text>
+					</Center>
 				</Group>
 				<Button onClick={() => onChangeSection('main')} children="Oke" />
 			</Stack>

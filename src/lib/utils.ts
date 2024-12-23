@@ -31,3 +31,9 @@ export const relativeDay = (date: Date | Moment | string) => {
 
     return diff == 0 ? 'Hari Ini' : diff == 1 ? 'Kemaren' : diff == 2 ? 'Lusa' : moment(date).format('DD MMM YYYY')
 }
+
+export const qs = (json: Record<string, any>) => {
+    return Object.keys(json)
+        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(json[key]))
+        .join('&');
+}

@@ -29,10 +29,7 @@ import DisplayMap from '../DisplayMap';
 
 const FALLBACK_COORD = { lat: -7.556258, lng: 110.821336 };
 
-export default function LocationSection({
-	form,
-	onChangeSection,
-}: ICreateFormSection) {
+export default function LocationSection({ form }: ICreateFormSection) {
 	const [mapRef, setMapRef] = useState<Map>();
 	const [isGraping, setIsGraping] = useState(false);
 	const [currentCoord, setCurrentCoord] = useState(
@@ -80,27 +77,34 @@ export default function LocationSection({
 				{mapRef && (
 					<MapSearchAutoComplete
 						map={mapRef}
-						onBackButtonClick={() => onChangeSection('main')}
+						onBackButtonClick={() =>
+							form.setFieldValue('section', 'main')
+						}
 					/>
 				)}
 			</Box>
-			<Stack bg="white" p="sm" align="end">
-				<Group gap="sm" wrap="nowrap" w="100%" align="center">
-					<ThemeIcon
-						variant="light"
-						size="lg"
-						children={<MapPin size="22" />}
-					/>
-					<Center h="2lh">
-						<Text size="sm" lineClamp={2}>
-							{isGraping
-								? 'Lepaskan penanda untuk mendapatkan alamat'
-								: currentAddress?.displayName || 'Mengambil data...'}
-						</Text>
-					</Center>
-				</Group>
-				<Button onClick={() => onChangeSection('main')} children="Oke" />
-			</Stack>
+
+			<Group px="sm" py="6" gap="sm" wrap="nowrap" w="100%" align="center">
+				<ThemeIcon
+					variant="light"
+					size="lg"
+					children={<MapPin size="22" />}
+				/>
+				<Center h="2lh">
+					<Text size="sm" lineClamp={2}>
+						{isGraping
+							? 'Lepaskan penanda untuk mendapatkan alamat'
+							: currentAddress?.displayName || 'Mengambil data...'}
+					</Text>
+				</Center>
+			</Group>
+
+			<Group p="sm" justify="end" className="borderedModalFooter">
+				<Button
+					onClick={() => form.setFieldValue('section', 'main')}
+					children="Oke"
+				/>
+			</Group>
 		</Stack>
 	);
 }

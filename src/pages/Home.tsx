@@ -1,6 +1,7 @@
 import { ActionIcon, Affix, Avatar, Center, Container, Group, Loader, Paper, rem, Stack, Transition } from '@mantine/core'; //prettier-ignore
 import { PlusIcon } from 'lucide-react';
 import useSWR from 'swr';
+import { useCreateEntryModal } from '../components/CreateEntry/CreateEntryContext';
 import {
 	CameraButton,
 	GaleryButton,
@@ -9,8 +10,9 @@ import DaylyJournal from '../components/JournalList/DayilyJournal';
 import { useAppContext } from '../lib/useAppContext';
 
 export default function Home() {
-	const { isSupportCapture, isMobile, createEntryControl, pinned, createEntryOpened } = useAppContext(); //prettier-ignore
-	const { data } = useSWR<JournalList[]>('/journals');
+	const { isSupportCapture, isMobile, pinned } = useAppContext(); //prettier-ignore
+	const createModal = useCreateEntryModal();
+	const { data } = useSWR<JournalItem[]>('/journals');
 
 	return (
 		<Container py="xs" size="sm">
@@ -37,14 +39,30 @@ export default function Home() {
 						c="gray.6"
 						fz="sm"
 						h={rem(36)}
-						style={{ userSelect: 'none', justifyContent: 'start' }}
+						style={{
+							userSelect: 'none',
+							justifyContent: 'start',
+							cursor: 'pointer',
+						}}
 						children="Buat Catatan"
-						onClick={createEntryControl.open}
+						onClick={createModal.open}
 					/>
 					{isSupportCapture ? (
-						<CameraButton onAddFile={() => {}} />
+						<CameraButton
+							onAddFile={(e) => {
+								createModal.form.insertListItem('images', e);
+								createModal.open();
+							}}
+						/>
 					) : (
-						<GaleryButton onAddFiles={() => {}} />
+						<GaleryButton
+							onAddFiles={(e) => {
+								e.forEach((f) =>
+									createModal.form.insertListItem('images', f)
+								);
+								createModal.open();
+							}}
+						/>
 					)}
 				</Paper>
 
@@ -54,7 +72,7 @@ export default function Home() {
 							<DaylyJournal data={journal} key={journal.date} />
 						))
 					) : (
-						<Center>
+						<Center p='md'>
 							<Loader type="dots" />
 						</Center>
 					)}
@@ -64,14 +82,14 @@ export default function Home() {
 				<Affix
 					style={{
 						zIndex: 100,
-						bottom: 'var(--mantine-spacing-xl)',
+						bottom: 'calc(var(--mantine-spacing-md) + 50px)',
 						right: 'var(--mantine-spacing-md)',
 					}}
 				>
 					<Transition
 						duration={300}
 						transition="slide-up"
-						mounted={!pinned && !createEntryOpened}
+						mounted={!pinned && !createModal.opened}
 					>
 						{(transitionStyles) => (
 							<ActionIcon
@@ -80,7 +98,7 @@ export default function Home() {
 								c="blue.5"
 								style={transitionStyles}
 								children={<PlusIcon size="30" />}
-								onClick={createEntryControl.open}
+								onClick={createModal.open}
 							/>
 						)}
 					</Transition>

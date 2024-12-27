@@ -1,0 +1,23 @@
+.body {
+    padding: 0;
+    flex: 1;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden !important;
+    height: auto;
+}
+
+.header {
+    border-block-end: 1px solid var(--mantine-color-gray-2);
+}
+
+.title {
+    font-weight: 600;
+}
+
+.inner {
+    padding-inline: var(--mantine-spacing-md);
+}

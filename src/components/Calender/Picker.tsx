@@ -2,14 +2,14 @@ import { Box, Button, Center, Grid, rem } from '@mantine/core'; //prettier-ignor
 import moment, { Moment } from 'moment';
 import styles from './calender.module.css';
 
-type CalenderEntriesData = {
-	dateHasEntries: string;
-	image?: string;
+type HasEntriesDate = {
+	date: string;
+	sampleImage?: string;
 };
 interface MonthlyCalender {
 	year: number;
 	month: number;
-	data?: CalenderEntriesData[];
+	data?: HasEntriesDate[];
 	onDayClick: (date: Moment) => void;
 }
 
@@ -23,8 +23,8 @@ export function MonthlyCalender({
 	const daysInMonth = monthMoment.daysInMonth();
 	const startDay = monthMoment.startOf('month').day();
 
-	const map = new Map<string, CalenderEntriesData>();
-	data?.forEach((e) => map.set(e.dateHasEntries, e));
+	const map = new Map<string, HasEntriesDate>();
+	data?.forEach((e) => map.set(e.date, e));
 
 	const today = moment().startOf('d');
 
@@ -39,7 +39,7 @@ export function MonthlyCalender({
 				isToday: date.isSame(today),
 				hasEntries: Boolean(entry),
 				isFuture: date.isAfter(new Date()),
-				image: entry?.image,
+				image: entry?.sampleImage,
 			};
 		}
 	);

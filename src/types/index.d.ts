@@ -6,9 +6,10 @@ type CreateEntryForm = {
     tags: string[];
     address?: string,
     coordinate?: MyLatLng
-
-    coordinateEdited : boolean,
-    datetimeEdited : boolean
+    section : CreateEntryFormSection
+    coordinateEdited: boolean,
+    userLocationIsLoading: boolean,
+    datetimeEdited: boolean
 };
 
 type MyLatLng = {
@@ -39,28 +40,55 @@ declare module "*.css" {
 }
 
 
-type JournalList = {
-    date: string,
-    entries: SimpleEntryData[]
+
+type JournalItem = {
+    id: number
+    date: string
+    entries: EntryItem[]
+    habits: Habit[]
+    summary?: Summary
+}
+type Habit = {
+    id: number,
+    name: string,
+    icon: string,
+    deleted: boolean
 }
 
-type SimpleEntryData = {
-    id: number;
-    content: string;
-    datetime: string;
-    location: {
-        address: string;
-        id: number;
-    } | null;
-    images: EntryImageData[];
-    tags: {
-        id: number,
-        name: string,
-    }[]
+type Summary = {
+    id: number,
+    content: string,
+    createdAt: string,
+    updatedAt: string
 }
+type EntryItem = {
+    id: number
+    content: string
+    datetime: string
+    location: {
+        address: string
+        id: number
+    } | null
+    images: {
+        imageUrl: string
+        width: number
+        height: number
+    }[]
+    tags: any[]
+
+    createdAt: string
+    updatedAt: string
+}
+
 
 type EntryImageData = {
     imageUrl: string;
     width: number;
     height: number;
+}
+
+type SimpleHabit = {
+    id: number,
+    name: string,
+    icon: string
 }

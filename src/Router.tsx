@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import Layout from "./App";
+import Layout from "./components/Layout/Layout";
 import Calender from "./pages/Calender";
 import Home from "./pages/Home";
 import CalenderDate from "./pages/CalenderEntries";

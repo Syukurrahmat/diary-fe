@@ -4,5 +4,4 @@ type UseFormType<T = any> = UseFormReturnType<T, (values: T) => CreateEntryForm>
 
 interface ICreateFormSection {
 	form: UseFormType<CreateEntryForm>;
-	onChangeSection: (s: CreateEntryFormSection) => void;
-}
+ }

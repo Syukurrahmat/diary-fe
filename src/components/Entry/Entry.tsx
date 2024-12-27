@@ -1,5 +1,7 @@
-import { ActionIcon, Badge, Box, Group, Space, Stack, StackProps, Text, Title } from '@mantine/core'; //prettier-ignore
-import { EllipsisIcon } from 'lucide-react';
+import { Menu, rem, Text } from '@mantine/core';
+
+import { ActionIcon, Badge, Box, Group, Space, Stack, StackProps, Title } from '@mantine/core'; //prettier-ignore
+import { Edit3Icon, EllipsisIcon, Trash2Icon } from 'lucide-react';
 import moment from 'moment';
 import EntryImagesSlider from '../Entry/EntryImagesSlider';
 import style from './entry.module.css';
@@ -8,7 +10,7 @@ export function EntryWrapper(props: StackProps) {
 	return <Stack className={style.wrapper} {...props} />;
 }
 
-export function Entry({ data }: { data: SimpleEntryData }) {
+export function Entry({ data }: { data: EntryItem }) {
 	return (
 		<div className={style.item}>
 			<div className={style.bulletWrapper}>
@@ -17,25 +19,29 @@ export function Entry({ data }: { data: SimpleEntryData }) {
 			</div>
 
 			<Stack gap="4" flex="1">
-				<Stack gap="2">
-					<Group justify="space-between">
-						<Title size="lg" fw="600" c="blue.5">
+				<Stack gap="6">
+					<Group justify="space-between" wrap="nowrap" align="start">
+						<Title h={rem(24)} size="lg" fw="600" c="blue.5">
 							{moment(data.datetime).format('HH:mm')}
 						</Title>
-						<ActionIcon
-							size="md"
-							color="gray"
-							variant="transparent"
-							children={<EllipsisIcon />}
-						/>
+						<EntryMenu />
 					</Group>
-					<Text size="calc(0.95* var(--mantine-font-size-sm))" c="dimmed">
-						{data.location?.address}
-					</Text>
+					{!!data.location?.address && (
+						<Text
+							size="calc(0.95* var(--mantine-font-size-sm))"
+							c="dimmed"
+							lineClamp={1}
+						>
+							{data.location?.address}
+						</Text>
+					)}
 				</Stack>
+
 				<Stack gap="sm">
-					<Box  fz="sm" children={data.content} />
-					<EntryImagesSlider images={data.images} />
+					<Box fz="sm" children={data.content} />
+					{!!data.images.length && (
+						<EntryImagesSlider images={data.images} />
+					)}
 					{!!data.tags.length && (
 						<Group gap="xs">
 							{data.tags.map((e) => (
@@ -56,5 +62,29 @@ export function Entry({ data }: { data: SimpleEntryData }) {
 				<Space py="2" />
 			</Stack>
 		</div>
+	);
+}
+
+function EntryMenu() {
+	return (
+		<Menu shadow="md" width={200} position="bottom-end">
+			<Menu.Target>
+				<ActionIcon
+					size={rem(24)}
+					color="gray"
+					variant="transparent"
+					className="entriMenuIcon"
+					radius="sm"
+					children={<EllipsisIcon size="20" />}
+				/>
+			</Menu.Target>
+
+			<Menu.Dropdown>
+				<Menu.Item leftSection={<Edit3Icon size="16" />}>Ubah</Menu.Item>
+				<Menu.Item c="red" leftSection={<Trash2Icon size="16" />}>
+					Hapus
+				</Menu.Item>
+			</Menu.Dropdown>
+		</Menu>
 	);
 }

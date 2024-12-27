@@ -16,8 +16,10 @@ export default function MySwiper(props: SwiperProps) {
 			}}
 			mousewheel={{
 				forceToAxis : true,
-				enabled : true
+				enabled : true,
 			}}
+			speed={250}
+			passiveListeners
 			style={{
 				userSelect: 'none',
 			}}

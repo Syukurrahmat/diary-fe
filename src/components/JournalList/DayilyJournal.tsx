@@ -1,14 +1,18 @@
-import { ActionIcon, Alert, Box, CheckIcon, Group, Paper, Title } from '@mantine/core'; //prettier-ignore
+import { ActionIcon, Group, Paper, Title } from '@mantine/core'; //prettier-ignore
 import { Share2Icon, SortAscIcon, SortDescIcon } from 'lucide-react';
 import { useState } from 'react';
 import { relativeDay } from '../../lib/utils';
 import { Entry, EntryWrapper } from '../Entry/Entry';
+import TrackerCard from './TrackerCard';
 
-export default function DaylyJournal({ data }: { data: JournalList }) {
+export default function DaylyJournal({ data }: { data: JournalItem }) {
 	const [isReversed, setIsReversed] = useState(false);
+	const displayEntries = isReversed
+		? data.entries.slice().reverse()
+		: data.entries;
 
 	return (
-		<Paper key={data.date} withBorder>
+		<Paper key={data.date} withBorder className="daylyJournalPapper">
 			<Group justify="space-between" p="md" className="borderedModalHeader">
 				<Title size="lg">{relativeDay(data.date)}</Title>
 				<Group gap="xs">
@@ -29,40 +33,12 @@ export default function DaylyJournal({ data }: { data: JournalList }) {
 					/>
 				</Group>
 			</Group>
-			<Alert
-				radius="0"
-				pl="calc(var(--mantine-spacing-md) - 0.25 * 16px)"
-				styles={{
-					icon: {
-						width: '16px',
-						marginTop: '2px',
-						marginInlineEnd: 'var(--mantine-spacing-xs)',
-					},
-				}}
-				variant="light"
-				color="blue"
-				title={
-					<Title size="lg" fw="600" c="blue.5">
-						Ringkasan
-					</Title>
-				}
-				icon={<CheckIcon />}
-			>
-				Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum
-				similique non sed repudiandae, quisquam iusto odit nihil animi totam
-				quas recusandae aut perferendis beatae in dolor saepe aliquam
-				dolores facilis.
-			</Alert>
-			<Box pos="relative">
-				<EntryWrapper py="sm">
-					{(isReversed
-						? data.entries.slice().reverse()
-						: data.entries
-					).map((e) => (
-						<Entry data={e} key={e.id} />
-					))}
-				</EntryWrapper>
-			</Box>
+			<TrackerCard data={data} />
+			<EntryWrapper py="sm">
+				{displayEntries.map((e) => (
+					<Entry data={e} key={e.id} />
+				))}
+			</EntryWrapper>
 		</Paper>
 	);
 }

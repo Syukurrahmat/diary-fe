@@ -10,10 +10,7 @@ import {
 import { ArrowLeft } from 'lucide-react';
 import { ICreateFormSection } from '../../types/additional';
 
-export default function DatetimeSection({
-	form,
-	onChangeSection,
-}: ICreateFormSection) {
+export default function DatetimeSection({ form }: ICreateFormSection) {
 	form.watch('date', () => form.setFieldValue('datetimeEdited', true));
 	form.watch('time', () => form.setFieldValue('datetimeEdited', true));
 
@@ -25,7 +22,7 @@ export default function DatetimeSection({
 						variant="subtle"
 						radius="sm"
 						ml="-4px"
-						onClick={() => onChangeSection('main')}
+						onClick={() => form.setFieldValue('section', 'main')}
 						children={<ArrowLeft size="20" />}
 					/>
 					<Title size="md" fw="600">
@@ -61,7 +58,10 @@ export default function DatetimeSection({
 				justify="end"
 				pt="md"
 			>
-				<Button onClick={() => onChangeSection('main')} children="Oke" />
+				<Button
+					onClick={() => form.setFieldValue('section', 'main')}
+					children="Oke"
+				/>
 			</Group>
 		</Stack>
 	);

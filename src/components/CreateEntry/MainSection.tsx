@@ -1,44 +1,36 @@
-import { ActionIcon, Box, Button, CloseButton, Group, Stack } from '@mantine/core'; //prettier-ignore
-import { HashIcon, MapPinIcon } from 'lucide-react';
-import { useState } from 'react';
-import { CameraButton, GaleryButton } from '../input/ImagePickerButton';
-import { Collapse, Text, Textarea } from '@mantine/core';
-import { Calendar } from 'lucide-react';
+import { ActionIcon, Box, Button, CloseButton, Collapse, Group, Stack, Text, Textarea } from '@mantine/core'; //prettier-ignore
+import { Calendar, HashIcon, MapPinIcon } from 'lucide-react';
 import moment from 'moment';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { SwiperSlide } from 'swiper/react';
 import { useIsSupportCapture } from '../../lib/hooks';
 import { ICreateFormSection } from '../../types/additional';
-import HashtagInput from '../input/HashtagInput';
 import ImagesPreviewItem from '../ImagesPreviewItem';
+import HashtagInput from '../input/HashtagInput';
+import { CameraButton, GaleryButton } from '../input/ImagePickerButton';
 import MySwiper from '../MySwiper';
 
-export default function MainSection({
-	form,
-	onChangeSection,
-	onSubmit,
-	userLocationIsLoading,
-}: ICreateFormSection & { onSubmit: any; userLocationIsLoading: boolean }) {
+export default function MainSection({ form }: ICreateFormSection) {
 	const isSupportCapture = useIsSupportCapture();
 	const [tagsIsOpen, setTagsOpen] = useState(false);
 	const tagsRef = useRef<HTMLInputElement>(null);
+	const textareaRef = useRef<HTMLTextAreaElement>(null);
 	const formValues = form.getValues();
 
 	const cansubmit =
-		!userLocationIsLoading &&
-		(form.getValues().content.length || form.getValues().images.length);
+		!formValues.userLocationIsLoading &&
+		(formValues.content.trim().length || formValues.images.length);
 
 	return (
 		<Stack gap="0" h="100%">
 			<Box p="md" flex="1">
 				<Stack gap="0" mb="6">
 					<Button
-						mb="4"
 						w="fit-content"
 						variant="transparent"
 						size="compact-sm"
 						px="0"
-						onClick={() => onChangeSection('datepicker')}
+						onClick={() => form.setFieldValue('section', 'datepicker')}
 						leftSection={<Calendar size="18" />}
 					>
 						{moment(
@@ -46,8 +38,8 @@ export default function MainSection({
 							'YYYY-MM-DD HH:mm'
 						).format('DD MMM YYYY, HH:mm')}
 					</Button>
-					<Collapse in={!!formValues.coordinate || userLocationIsLoading}>
-						<Group wrap="nowrap">
+					<Collapse in={!!formValues.coordinate || formValues.userLocationIsLoading}>
+						<Group wrap="nowrap" pt="4">
 							<Button
 								w="fit-content"
 								variant="transparent"
@@ -57,7 +49,9 @@ export default function MainSection({
 								px="0"
 								justify="start"
 								maw="100%"
-								onClick={() => onChangeSection('locationpicker')}
+								onClick={() =>
+									form.setFieldValue('section', 'locationpicker')
+								}
 								leftSection={<MapPinIcon size="18" />}
 							>
 								<Text
@@ -68,7 +62,7 @@ export default function MainSection({
 										overflow: 'hidden',
 									}}
 									children={
-										userLocationIsLoading
+										formValues.userLocationIsLoading
 											? 'Mengambil Lokasi'
 											: formValues.address
 											? formValues.address
@@ -95,9 +89,10 @@ export default function MainSection({
 					placeholder="Apa yang kamu rasakan saat ini??"
 					size="md"
 					autosize
-					variant="unstyled"
 					data-autofocus
-					minRows={2}
+					ref={textareaRef}
+					variant="unstyled"
+					minRows={formValues.images.length == 0 ? 2 : 1}
 					flex="3"
 					key={form.key('content')}
 					{...form.getInputProps('content')}
@@ -134,9 +129,8 @@ export default function MainSection({
 				>
 					<HashtagInput
 						ref={tagsRef}
-						autoFocus
 						acceptValueOnBlur
-						defaultValue={form.values.tags}
+						value={formValues.tags}
 						onChange={(e) => form.setFieldValue('tags', e)}
 						onBlur={() => {
 							if (!formValues.tags.length) setTagsOpen(false);
@@ -168,7 +162,9 @@ export default function MainSection({
 							size="sm"
 							c="gray"
 							children={<MapPinIcon />}
-							onClick={() => onChangeSection('locationpicker')}
+							onClick={() =>
+								form.setFieldValue('section', 'locationpicker')
+							}
 						/>
 						<ActionIcon
 							variant="transparent"
@@ -176,9 +172,9 @@ export default function MainSection({
 							c="gray"
 							onClick={() => {
 								if (formValues.tags.length == 0) {
-									setTagsOpen(true);
 									setTimeout(() => tagsRef.current?.focus());
-								} else {
+									setTagsOpen(true);
+								} else if (!tagsIsOpen) {
 									tagsRef.current?.focus();
 								}
 							}}
@@ -186,11 +182,7 @@ export default function MainSection({
 						/>
 					</Group>
 
-					<Button
-						disabled={!cansubmit}
-						onClick={onSubmit}
-						children="Buat"
-					/>
+					<Button disabled={!cansubmit} type="submit" children="Buat" />
 				</Group>
 			</Box>
 		</Stack>

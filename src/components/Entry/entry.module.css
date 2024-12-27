@@ -52,7 +52,22 @@
     background-color: white;
 }
 
+.imageWrapper {
+    overflow-x: scroll;
+    display: flex;
+    gap: 8px;
+
+    &{
+        -ms-overflow-style: none;  /* Internet Explorer 10+ */
+        scrollbar-width: none;  /* Firefox */
+    }
+    &::-webkit-scrollbar { 
+        display: none;  /* Safari and Chrome */
+    }
+}
+
 .imageItem {
+    user-select: none;
     width: fit-content;
     min-width: 200px;
     max-width: calc(100% - 8 * var(--tl-padding));

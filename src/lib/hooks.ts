@@ -47,3 +47,19 @@ export const getUserLocation = () => {
 		}
 	})
 }
+
+export const useModalBackButtonHandler = (opened: boolean, aditionalCbOnOpen?: () => any) => {
+	useEffect(() => {
+		if (opened) {
+			if (aditionalCbOnOpen) aditionalCbOnOpen()
+			window.history.pushState(null, '', window.location.href);
+			window.addEventListener('popstate', close);
+		} else {
+			window.removeEventListener('popstate', close);
+		}
+
+		return () => {
+			window.removeEventListener('popstate', close);
+		};
+	}, [opened]);
+}

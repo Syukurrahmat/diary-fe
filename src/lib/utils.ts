@@ -36,4 +36,18 @@ export const qs = (json: Record<string, any>) => {
     return Object.keys(json)
         .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(json[key]))
         .join('&');
-}
+};
+export const getSlideSectionProps = (key: string | number) => {
+    const isMain = key === 0 || key === 'main';
+    
+    return {
+        initial: {
+            x: isMain ? '-100%' : '100%',
+            opacity: 0,
+        },
+        exit: { x: isMain ? '-100%' : '100%', opacity: 0 },
+        animate: { x: 0, opacity: 1 },
+        transition: { duration: 0.3 },
+        key
+    };
+};

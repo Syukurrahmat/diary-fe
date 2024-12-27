@@ -5,13 +5,8 @@ import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useSWR from 'swr';
 import { qs } from '../../lib/utils';
+import Log from '../Log';
 import { MonthList, MonthlyCalender, YearList } from './Picker';
-import { DATE_FACTOR } from '../../lib/constants';
-
-type CalenderEntriesData = {
-	dateHasEntries: string;
-	image?: string;
-};
 
 const PrevButton = ActionIcon.withProps({
 	size: 'lg',
@@ -50,7 +45,7 @@ const NextButton = ActionIcon.withProps({
 });
 
 export default function CalenderPicker() {
-	const [mode, setMode] = useState<'decade' | 'year' | 'month'>('month');
+	const [level, setLevel] = useState<'decade' | 'year' | 'month'>('month');
 
 	const [year, setYear] = useState(new Date().getFullYear());
 	const [month, setMonth] = useState(new Date().getMonth());
@@ -59,13 +54,13 @@ export default function CalenderPicker() {
 	const navigate = useNavigate();
 
 	const query =
-		mode == 'decade'
+		level == 'decade'
 			? qs({ decade })
-			: mode == 'year'
+			: level == 'year'
 			? qs({ year })
 			: qs({ year, month: (month + 1).toString().padStart(2, '0') });
 
-	const { data } = useSWR<CalenderEntriesData[]>(
+	const { data } = useSWR<CalenderData>(
 		query && '/journals/calender?' + query
 	);
 
@@ -73,13 +68,13 @@ export default function CalenderPicker() {
 		if (month >= 12) setYear((e) => e + 1);
 		if (month < 0) setYear((e) => e - 1);
 		setMonth((12 + month) % 12);
-		setMode('month');
+		setLevel('month');
 	};
 
 	const onYearChange = (year: number) => {
 		setDecade(Math.floor(year / 10) * 10);
 		setYear(year);
-		setMode('year');
+		setLevel('year');
 	};
 
 	const getIsPrevButtonDisabled = useCallback(
@@ -97,7 +92,7 @@ export default function CalenderPicker() {
 	);
 
 	const onDayClick = (date: Moment) => {
-		navigate('./' + date.utc(true).valueOf() / DATE_FACTOR, {state : 123});
+		navigate('./' + date.format('YYYY-MM-DD'));
 	};
 
 	return (
@@ -111,13 +106,13 @@ export default function CalenderPicker() {
 				component={Group}
 				wrap="nowrap"
 			>
-				{mode === 'month' && (
+				{level === 'month' && (
 					<>
 						<PrevButton
 							onClick={() => onMonthChange(month - 1)}
 							disabled={getIsPrevButtonDisabled('month', [year, month])}
 						/>
-						<LabelButton loading={!data} onClick={() => setMode('year')}>
+						<LabelButton loading={!data} onClick={() => setLevel('year')}>
 							{moment([year, month]).format('MMMM YYYY')}
 						</LabelButton>
 						<NextButton
@@ -126,7 +121,7 @@ export default function CalenderPicker() {
 						/>
 					</>
 				)}
-				{mode === 'year' && (
+				{level === 'year' && (
 					<>
 						<PrevButton
 							onClick={() => onYearChange(year - 1)}
@@ -134,7 +129,7 @@ export default function CalenderPicker() {
 						/>
 						<LabelButton
 							loading={!data}
-							onClick={() => setMode('decade')}
+							onClick={() => setLevel('decade')}
 						>
 							{year}
 						</LabelButton>
@@ -144,7 +139,7 @@ export default function CalenderPicker() {
 						/>
 					</>
 				)}
-				{mode === 'decade' && (
+				{level === 'decade' && (
 					<>
 						<PrevButton
 							onClick={() => setDecade((e) => e - 10)}
@@ -162,21 +157,43 @@ export default function CalenderPicker() {
 			</Paper>
 
 			<Paper withBorder p="sm">
-				{mode === 'month' && (
+				{level === 'month' && (
 					<MonthlyCalender
 						onDayClick={onDayClick}
 						year={year}
 						month={month}
-						data={data}
+						data={data?.hasEntriesDates}
 					/>
 				)}
-				{mode === 'year' && (
+				{level === 'year' && (
 					<MonthList year={year} onItemClick={onMonthChange} />
 				)}
-				{mode === 'decade' && (
+				{level === 'decade' && (
 					<YearList decade={decade} onItemClick={onYearChange} />
 				)}
 			</Paper>
+
+			<Log data={{ ...data?.topHabits, ...data?.count }} />
 		</Stack>
 	);
 }
+
+type CalenderData = {
+	hasEntriesDates: HasEntriesDate[];
+	topHabits: TopHabit[];
+	count: {
+		images: number;
+		entries: number;
+		journalDay: number;
+	};
+};
+
+type HasEntriesDate = {
+	date: string;
+	sampleImage?: string;
+};
+
+type TopHabit = {
+	name: string;
+	count: number;
+};

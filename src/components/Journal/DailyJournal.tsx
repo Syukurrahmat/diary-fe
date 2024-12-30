@@ -3,9 +3,9 @@ import { Share2Icon, SortAscIcon, SortDescIcon } from 'lucide-react';
 import { useState } from 'react';
 import { relativeDay } from '../../lib/utils';
 import { Entry, EntryWrapper } from '../Entry/Entry';
-import TrackerCard from './TrackerCard';
+import SummaryCard from '../SummaryCard/SummaryCard';
 
-export default function DaylyJournal({ data }: { data: JournalItem }) {
+export default function DailyJournal({ data }: { data: JournalItem }) {
 	const [isReversed, setIsReversed] = useState(false);
 	const displayEntries = isReversed
 		? data.entries.slice().reverse()
@@ -33,7 +33,11 @@ export default function DaylyJournal({ data }: { data: JournalItem }) {
 					/>
 				</Group>
 			</Group>
-			<TrackerCard data={data} />
+			<SummaryCard
+				habits={data.habits}
+				date={data.date}
+				summary={data.summary}
+			/>
 			<EntryWrapper py="sm">
 				{displayEntries.map((e) => (
 					<Entry data={e} key={e.id} />

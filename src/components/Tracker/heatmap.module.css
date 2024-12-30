@@ -1,0 +1,40 @@
+.wrapper {
+    gap: var(--mantine-spacing-xs);
+    --item-size: 16px
+}
+
+.monthNameGrid {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(53, var(--item-size));
+    grid-template-rows: auto;
+    grid-auto-flow: column;
+    gap: 4px;
+}
+
+.monthNameGrid {
+    text-align: center;
+    font-size: var(--mantine-font-size-sm);
+    color: var(--mantine-color-dimmed);
+}
+
+.itemGrid {
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: repeat(7, var(--item-size));
+    grid-auto-flow: column;
+    gap: 4px;
+}
+
+.item {
+    border-radius: 6px;
+    min-width: var(--item-size);
+
+    &[data-status="true"] {
+        background-color: var(--color)
+    }
+
+    &:not([data-status="true"]) {
+        background-color: alpha(var(--color), 0.2)
+    }
+}

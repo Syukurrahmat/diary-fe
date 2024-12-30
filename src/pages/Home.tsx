@@ -6,7 +6,7 @@ import {
 	CameraButton,
 	GaleryButton,
 } from '../components/input/ImagePickerButton';
-import DaylyJournal from '../components/JournalList/DayilyJournal';
+import DailyJournal from '../components/Journal/DailyJournal';
 import { useAppContext } from '../lib/useAppContext';
 
 export default function Home() {
@@ -69,10 +69,10 @@ export default function Home() {
 				<Stack gap="md">
 					{data ? (
 						data.map((journal) => (
-							<DaylyJournal data={journal} key={journal.date} />
+							<DailyJournal data={journal} key={journal.date} />
 						))
 					) : (
-						<Center p='md'>
+						<Center p="md">
 							<Loader type="dots" />
 						</Center>
 					)}
@@ -82,7 +82,7 @@ export default function Home() {
 				<Affix
 					style={{
 						zIndex: 100,
-						bottom: 'calc(var(--mantine-spacing-md) + 50px)',
+						bottom: 'calc(var(--mantine-spacing-md) + 56px)',
 						right: 'var(--mantine-spacing-md)',
 					}}
 				>

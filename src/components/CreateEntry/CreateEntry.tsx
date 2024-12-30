@@ -4,7 +4,6 @@ import { useDisclosure } from '@mantine/hooks';
 import moment from 'moment';
 import { AnimatePresence, motion } from 'motion/react';
 import { DOMAttributes } from 'react';
-import { fetcher, myAxios } from '../../lib/fetcher';
 import { getUserLocation } from '../../lib/hooks';
 import { useAppContext } from '../../lib/useAppContext';
 import { filetoBase64, getSlideSectionProps } from '../../lib/utils';
@@ -24,7 +23,7 @@ type SubmitValue = {
 };
 
 export default function CreateEntryProvider({ children }: DOMAttributes<any>) {
-	const { isMobile } = useAppContext();
+	const { isMobile, fetcher } = useAppContext();
 
 	const form = useForm<CreateEntryForm>({
 		initialValues: {
@@ -61,10 +60,10 @@ export default function CreateEntryProvider({ children }: DOMAttributes<any>) {
 					.then(async (e) => {
 						if (!e) return;
 						form.setFieldValue('coordinate', e);
-						const address = await fetcher(
+						const address = await fetcher.get(
 							`/geocoding/reverse?lat=${e.lat}&lng=${e.lng}`
 						);
-						form.setFieldValue('address', address.displayName);
+						form.setFieldValue('address', address.data.displayName);
 					})
 					.finally(() =>
 						form.setFieldValue('userLocationIsLoading', false)
@@ -91,7 +90,7 @@ export default function CreateEntryProvider({ children }: DOMAttributes<any>) {
 			images: await Promise.all(images.map(filetoBase64)),
 		};
 
-		myAxios
+		fetcher
 			.post('/entries', submitValue)
 			.then(() => loadingToast.success('Berhasil di posting'))
 			.catch(() => loadingToast.failed('Gagal di posting'));
@@ -112,10 +111,7 @@ export default function CreateEntryProvider({ children }: DOMAttributes<any>) {
 					<AnimatePresence mode="popLayout" initial={false}>
 						{section === 'main' && (
 							<motion.div {...getSlideSectionProps('main')} key="main">
-								<MainSection
-									form={form}
-									
-								/>
+								<MainSection form={form} />
 							</motion.div>
 						)}
 

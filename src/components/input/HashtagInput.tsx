@@ -4,7 +4,6 @@ import { forwardRef, useState } from 'react';
 import styles from './hashtagInput.module.css';
 import useSWR from 'swr';
 import { useDebouncedValue } from '@mantine/hooks';
-import { fetcher } from '../../lib/fetcher';
 
 type AutocompleteData = { id: number; name: string };
 
@@ -15,7 +14,6 @@ export default forwardRef<HTMLInputElement, TagsInputProps>(
 
 		const { data } = useSWR<AutocompleteData[]>(
 			debouncedValue.length > 1 && `/tags/autocomplete?q=${debouncedValue}`,
-			fetcher,
 			{ keepPreviousData: true }
 		);
 
@@ -31,7 +29,7 @@ export default forwardRef<HTMLInputElement, TagsInputProps>(
 					wrapper: styles.wrapper,
 					section: styles.section,
 					input: styles.input,
-					pill : styles.pill
+					pill: styles.pill,
 				}}
 				maxTags={3}
 				data={data?.map((e) => e.name) || []}

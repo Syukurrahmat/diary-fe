@@ -45,13 +45,14 @@ type JournalItem = {
     id: number
     date: string
     entries: EntryItem[]
-    habits: Habit[]
+    habits: JournalItemHabit[]
     summary?: Summary
 }
-type Habit = {
+type JournalItemHabit = {
     id: number,
     name: string,
     icon: string,
+    color: string,
     deleted: boolean
 }
 
@@ -87,8 +88,9 @@ type EntryImageData = {
     height: number;
 }
 
-type SimpleHabit = {
+type Habit = {
     id: number,
     name: string,
+    color: string,
     icon: string
 }

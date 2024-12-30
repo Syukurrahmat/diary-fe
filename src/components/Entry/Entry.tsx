@@ -1,6 +1,6 @@
 import { Menu, rem, Text } from '@mantine/core';
 
-import { ActionIcon, Badge, Box, Group, Space, Stack, StackProps, Title } from '@mantine/core'; //prettier-ignore
+import { ActionIcon, Badge, Group, Space, Stack, StackProps, Title } from '@mantine/core'; //prettier-ignore
 import { Edit3Icon, EllipsisIcon, Trash2Icon } from 'lucide-react';
 import moment from 'moment';
 import EntryImagesSlider from '../Entry/EntryImagesSlider';
@@ -19,7 +19,7 @@ export function Entry({ data }: { data: EntryItem }) {
 			</div>
 
 			<Stack gap="4" flex="1">
-				<Stack gap="6">
+				<Stack gap="4">
 					<Group justify="space-between" wrap="nowrap" align="start">
 						<Title h={rem(24)} size="lg" fw="600" c="blue.5">
 							{moment(data.datetime).format('HH:mm')}
@@ -28,17 +28,16 @@ export function Entry({ data }: { data: EntryItem }) {
 					</Group>
 					{!!data.location?.address && (
 						<Text
-							size="calc(0.95* var(--mantine-font-size-sm))"
+							size="calc(0.9 * var(--mantine-font-size-sm))"
 							c="dimmed"
 							lineClamp={1}
-						>
-							{data.location?.address}
-						</Text>
+							children={data.location?.address}
+						/>
 					)}
 				</Stack>
 
 				<Stack gap="sm">
-					<Box fz="sm" children={data.content} />
+					<Text children={data.content} />
 					{!!data.images.length && (
 						<EntryImagesSlider images={data.images} />
 					)}

@@ -26,6 +26,7 @@ export default function ImagesPreviewItem({
 				/>
 			) : (
 				<img
+					loading="lazy"
 					src={URL.createObjectURL(file)}
 					style={{
 						width: '100%',

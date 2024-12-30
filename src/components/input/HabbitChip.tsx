@@ -1,8 +1,4 @@
-import {
-	ActionIcon,
-	Checkbox,
-	Text
-} from '@mantine/core';
+import { ActionIcon, Checkbox, Text } from '@mantine/core';
 import { ReactNode } from 'react';
 import style from './habbitChip.module.css';
 
@@ -10,26 +6,29 @@ export interface HabbitChip {
 	icon: ReactNode;
 	value: string;
 	label: string;
+	color: string;
 }
-export function HabbitChip({ icon, value, label }: HabbitChip) {
+export function HabbitChip({ color, icon, value, label }: HabbitChip) {
 	return (
 		<Checkbox.Card
+			flex="1"
 			radius="md"
 			unstyled
 			className={style.root}
 			value={value}
 			component="div"
+			style={{ '--color': color }}
 		>
 			<ActionIcon
 				size="xl"
 				radius="xl"
 				variant="outline"
-				color="gray"
+				color={color}
 				className={style.icon}
 			>
 				{icon}
 			</ActionIcon>
-			<Text className={style.label}  size="sm" fw="500" children={label} />
+			<Text className={style.label} size="sm" fw="500" children={label} />
 		</Checkbox.Card>
 	);
 }

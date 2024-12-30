@@ -7,14 +7,16 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useSWR from 'swr';
-import { fetcher, myAxios } from '../../lib/fetcher';
+import { useAppContext } from '../../lib/useAppContext';
 import { getSlideSectionProps } from '../../lib/utils';
 import styles from '../../styles/myModal.module.css';
-import { HabbitChip } from '../HabbitChip/HabbitChip';
+import { HabbitChip } from '../input/HabbitChip';
 import { LoadingToast } from '../LoadingToast';
 import LucideIconLazy from '../LucideIconLazy';
 
 export default function CreateSummaryModal({ date }: { date: string }) {
+	const { fetcher } = useAppContext();
+
 	const [opened, { open, close }] = useDisclosure(false, {
 		onOpen: () => {
 			window.history.pushState(null, '', window.location.href);
@@ -48,7 +50,7 @@ export default function CreateSummaryModal({ date }: { date: string }) {
 
 		const { summary: content, habits } = values;
 
-		myAxios
+		fetcher
 			.post('/journals', {
 				content,
 				habits: habits.map((e) => +e),
@@ -69,7 +71,7 @@ export default function CreateSummaryModal({ date }: { date: string }) {
 				color="orange"
 				variant="light"
 			>
-				Buat Ringkasan
+				Tambah Ringkasan
 			</Button>
 			<Modal
 				title="Buat Ringkasan"
@@ -157,18 +159,19 @@ export default function CreateSummaryModal({ date }: { date: string }) {
 }
 
 function HabitsSelector(props: Partial<CheckboxGroupProps>) {
-	const { data } = useSWR<SimpleHabit[]>('/habits', fetcher, {
+	const { data } = useSWR<Habit[]>('/habits', {
 		revalidateIfStale: false,
 	});
 
 	const HabitList = useMemo(
 		() =>
-			data?.map((e, i) => (
+			data?.map((habit) => (
 				<HabbitChip
-					key={i}
-					value={e.id.toString()}
-					icon={<LucideIconLazy name={e.icon as any} />}
-					label={e.name}
+					key={habit.id}
+					color={habit.color}
+					value={habit.id.toString()}
+					icon={<LucideIconLazy name={habit.icon as any} />}
+					label={habit.name}
 				/>
 			)),
 		[data]
@@ -180,7 +183,7 @@ function HabitsSelector(props: Partial<CheckboxGroupProps>) {
 				{HabitList ? (
 					<>
 						{HabitList}
-						<Stack align="center" gap="4" px="xs" py="4px">
+						<Stack flex="1" align="center" gap="4" px="xs" py="4px">
 							<ActionIcon
 								radius="xl"
 								component="label"
@@ -196,14 +199,14 @@ function HabitsSelector(props: Partial<CheckboxGroupProps>) {
 						</Stack>
 					</>
 				) : (
-					<Group>
-						{Array(8).fill(
-							<Stack px="xs" py="4px" align="center" gap="6px">
+					Array(8)
+						.fill(null)
+						.map((_, i) => (
+							<Stack key={i} px="xs" py="4px" align="center" gap="6px">
 								<Skeleton h={rem(44)} w={rem(44)} circle />
 								<Skeleton h="md" radius="xs" w="56px" />
 							</Stack>
-						)}
-					</Group>
+						))
 				)}
 			</Group>
 		</Checkbox.Group>

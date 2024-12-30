@@ -1,7 +1,7 @@
-import { AppShell, Box, Container, Group, Title } from '@mantine/core'; //prettier-ignore
-import { Calendar, House, Images, MapIcon, TagIcon, User } from 'lucide-react'; //prettier-ignore
-import { useMemo } from 'react';
-import { Outlet } from 'react-router-dom'; //prettier-ignore
+import { AppShell, Box, Center, Container, Group, Loader, Title } from '@mantine/core'; //prettier-ignore
+import { Calendar, House, Images, MapIcon, RouteIcon, User } from 'lucide-react'; //prettier-ignore
+import { Suspense, useMemo } from 'react';
+import { Outlet, useLocation } from 'react-router-dom'; //prettier-ignore
 import { useAppContext } from '../../lib/useAppContext';
 import CreateEntryProvider from '../CreateEntry/CreateEntry';
 import NavBar from './NavBar';
@@ -10,7 +10,7 @@ export const navList = [
 	{ Icon: House, label: 'Beranda', to: '/' },
 	{ Icon: Calendar, label: 'Kalender', to: '/calendar' },
 	{ Icon: Images, label: 'Galeri', to: '/galery' },
-	{ Icon: TagIcon, label: 'Tags', to: '/tags' },
+	{ Icon: RouteIcon, label: 'Tracker', to: '/tracker' },
 	{ Icon: MapIcon, label: 'Atlas', to: '/maps' },
 	{ Icon: User, label: 'Profil', to: '/profile' },
 ];
@@ -18,6 +18,7 @@ export const navList = [
 export default function Layout() {
 	const { pinned } = useAppContext();
 
+	const location = useLocation();
 	const headerLabelMap = useMemo(() => {
 		const map = new Map();
 		navList.map((e) => map.set(e.to.slice(1), e.label));
@@ -28,7 +29,7 @@ export default function Layout() {
 		<AppShell
 			navbar={{ width: 200, breakpoint: 'sm' }}
 			header={{ height: 50, collapsed: !pinned, offset: false }}
-			footer={{ height: 52 }}
+			footer={{ height: 56 }}
 			bg="#f8f9fa"
 			transitionDuration={300}
 			layout="alt"
@@ -48,7 +49,16 @@ export default function Layout() {
 				</AppShell.Header>
 				<AppShell.Main>
 					<Box h="50px" />
-					<Outlet />
+
+					<Suspense
+						fallback={
+							<Center flex="1" px="md" mt="30vh">
+								<Loader color="gray" size="sm" />
+							</Center>
+						}
+					>
+						<Outlet />
+					</Suspense>
 				</AppShell.Main>
 				<NavBar />
 			</CreateEntryProvider>

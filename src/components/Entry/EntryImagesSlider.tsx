@@ -40,6 +40,7 @@ export default function EntryImagesSlider({ images }: ImageWrapper) {
 								fit="cover"
 								radius="md"
 								w="100%"
+								loading='lazy'
 								h="100%"
 								bd="1px solid gray.4"
 								src={e.imageUrl}

@@ -17,24 +17,20 @@
     &[data-checked] {
 
         & .icon {
-            border-color: var(--mantine-primary-color-filled);
-            background-color: var(--mantine-primary-color-filled);
+            border-color: var(--color);
+            background-color: var(--color);
             color: var(--mantine-color-default);
 
             @mixin hover {
                 @mixin light {
-                    background-color: var(--mantine-color-blue-7);
-                }
-
-                @mixin dark {
-                    background-color: var(--mantine-color-dark-6);
+                    background-color: darken(var(--color), 0.1)
                 }
             }
 
         }
 
         & .label {
-            color: var(--mantine-primary-color-filled) !important;
+            color: var(--color) !important;
         }
     }
 
@@ -42,7 +38,7 @@
     &.label {
 
         &[data-checked] {
-            border-color: var(--mantine-primary-color-filled);
+            border-color: var(--color);
         }
 
         font-family: var(--mantine-font-family-monospace);

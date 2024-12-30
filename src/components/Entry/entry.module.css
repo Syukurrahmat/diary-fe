@@ -25,7 +25,7 @@
 .bulletWrapper {
     min-width: var(--tl-bullet-size);
     position: relative;
-    padding-top: 6px;
+    padding-top: 5px;
 
     &::before {
         content: '';
@@ -33,7 +33,7 @@
         background-color: var(--mantine-color-gray-3);
         position: absolute;
         height: calc(100% + var(--tl-padding));
-        top: 12px;
+        top: 10px;
         right: 0;
         left: 0;
         margin-right: auto;

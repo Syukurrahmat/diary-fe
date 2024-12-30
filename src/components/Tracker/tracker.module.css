@@ -1,0 +1,12 @@
+.weeklyTracker {
+
+    flex-wrap: wrap;
+    user-select: none;
+    padding: var(--mantine-spacing-xs);
+    gap: var(--mantine-spacing-sm);
+
+    @media (max-width: 36em) {
+        flex-wrap: wrap;
+        flex-direction: column;
+    }
+}

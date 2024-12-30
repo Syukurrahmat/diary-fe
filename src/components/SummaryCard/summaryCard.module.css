@@ -1,8 +1,6 @@
 .root {
     padding-inline-start: calc(var(--mantine-spacing-md) - 0.25 * 16px);
-    
 }
-
 
 /* CSS untuk icon */
 .icon {
@@ -11,13 +9,17 @@
     margin-inline-end: var(--mantine-spacing-xs);
 }
 
+.body {
+    gap: calc(var(--mantine-spacing-xs) *0.5)
+}
+
 /* CSS untuk title */
 .title {
     font-weight: 600;
     font-size: var(--mantine-font-size-lg);
 }
 
-.label{
+.label {
     width: 100%;
 }
 

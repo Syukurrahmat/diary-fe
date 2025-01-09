@@ -1,3 +1,4 @@
+import { Box } from '@mantine/core';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { ReactNode, useCallback, useMemo, useState } from 'react';
@@ -6,18 +7,15 @@ import { API_URL } from '../constants';
 import { AuthContext } from './authContext';
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
-	const [auth, setAuth, removeAuth] = useCookies(['auth', 'refresh']);
-	const [isAuthenticated, setIsAuthenticated] = useState(Boolean(auth));
+	const [auth, setAuth, removeAuth] = useCookies(['access', 'refresh']);
+	const [isAuthenticated, setIsAuthenticated] = useState(Boolean(auth.access));
 
-	const setAuthValue = useCallback(
+	const signIn = useCallback(
 		(accessToken: string, refreshToken: string) => {
 			const payloadAccessToken = jwtDecode(accessToken);
 			const payloadRefreshToken = jwtDecode(refreshToken);
 
-			console.log(
-				'kadaluarsa apada' + new Date(payloadAccessToken.exp! * 1000)
-			);
-			setAuth('auth', accessToken, {
+			setAuth('access', accessToken, {
 				secure: true,
 				expires: new Date(payloadAccessToken.exp! * 1000),
 			});
@@ -25,38 +23,24 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 				secure: true,
 				expires: new Date(payloadRefreshToken.exp! * 1000),
 			});
+
+			console.log('djdjddjj');
 			setIsAuthenticated(true);
 		},
 		[setAuth]
 	);
 
-	const signIn = useCallback(
-		(email: string, password: string) =>
-			axios
-				.post(API_URL + '/auth/signin', { email, password })
-				.then((res) => {
-					if (res.status !== 200) throw Error('sss');
-					const { accessToken, refreshToken } = res.data.data;
-					setAuthValue(accessToken, refreshToken);
-				}),
-		[setAuthValue]
-	);
-
-	const signOut = useCallback(
-		() =>
-			axios.post(API_URL + '/auth/signout', null).then(() => {
-				removeAuth('auth');
-				removeAuth('refresh');
-				setIsAuthenticated(false);
-			}),
-		[removeAuth]
-	);
+	const signOut = useCallback(() => {
+		removeAuth('access');
+		removeAuth('refresh');
+		setIsAuthenticated(false);
+	}, [removeAuth]);
 
 	const fetcher = useMemo(() => {
 		const myAxios = axios.create({
 			baseURL: API_URL,
 			headers: {
-				Authorization: `Bearer ${auth.auth}`,
+				Authorization: `Bearer ${auth.access}`,
 				'Content-Type': 'application/json',
 			},
 			transformResponse: (e) => {
@@ -64,6 +48,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 				return response.data;
 			},
 		});
+
 		myAxios.interceptors.response.use(
 			(response) => response,
 			(error) => {
@@ -86,7 +71,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 					})
 					.then((response) => {
 						const { accessToken, refreshToken } = response.data.data;
-						setAuthValue(accessToken, refreshToken);
+						signIn(accessToken, refreshToken);
 						originalRequest.headers.Authorization = `Bearer ${accessToken}`;
 						console.log('refreshing success');
 						return myAxios(originalRequest);
@@ -99,7 +84,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 			}
 		);
 		return myAxios;
-	}, [auth.auth, auth.refresh, setAuthValue]);
+	}, [auth.access, auth.refresh, signIn]);
 
 	return (
 		<AuthContext.Provider
@@ -108,6 +93,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 				signOut,
 				isAuthenticated,
 				fetcher,
+				Authorization: 'Bearer' + auth.access,
 			}}
 			children={children}
 		/>

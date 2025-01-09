@@ -2,10 +2,11 @@ import { AxiosInstance } from "axios";
 import { createContext, useContext } from "react";
 
 type AuthContext = {
-    signIn: (email: string, password: string) => Promise<void>,
-    signOut: () => Promise<void>,
+    signIn: (accessToken: string, refreshToken: string) => void
+    signOut: () => void,
     isAuthenticated: boolean,
     fetcher: AxiosInstance
+    Authorization : string
 }
 
 export const AuthContext = createContext<AuthContext>(null as any)

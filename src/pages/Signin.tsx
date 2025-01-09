@@ -16,6 +16,8 @@ import { InfoIcon, NotebookTabsIcon } from 'lucide-react';
 import { useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../lib/Auth/authContext';
+import axios from 'axios';
+import { API_URL } from '../lib/constants';
 
 type SubmitingState = 'idle' | 'loading' | 'fail';
 
@@ -40,12 +42,25 @@ export default function Signin() {
 
 	const onSubmit = form.onSubmit((value) => {
 		setSubmitingState('loading');
-		signIn(value.email, value.password)
-			.then(() => {
+		axios
+			.post(API_URL + '/auth/signin', {
+				email: value.email,
+				password: value.password,
+			},{
+				withCredentials : true
+			})
+			.then((response) => {
+				signIn(
+					response.data.data.accessToken,
+					response.data.data.refreshToken
+				);
 				navigate('/');
 				setSubmitingState('idle');
 			})
-			.catch(() => setSubmitingState('fail'));
+			.catch((e) => {
+				console.log(e)
+				setSubmitingState('fail')
+			});
 	});
 
 	if (isAuthenticated) return <Navigate to="/" />;

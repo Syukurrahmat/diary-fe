@@ -375,7 +375,6 @@ export const data = {
 
 export function HabitHeatmap({ color }: { color: string }) {
 	const offsetDay = moment(data.date.start).day();
-
 	const dd = [...Array(offsetDay).fill(null), ...data.data];
 
 	const gg = useMemo(

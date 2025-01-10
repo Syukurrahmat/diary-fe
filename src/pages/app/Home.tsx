@@ -1,13 +1,10 @@
-import { ActionIcon, Affix, Avatar, Center, Container, Group, Loader, Paper, rem, Stack, Transition } from '@mantine/core'; //prettier-ignore
+import { ActionIcon, Affix, Avatar, Center, Container, Group, Paper, rem, Stack, Transition } from '@mantine/core'; //prettier-ignore
 import { PlusIcon } from 'lucide-react';
 import useSWR from 'swr';
-import { useCreateEntryModal } from '../components/CreateEntry/CreateEntryContext';
-import {
-	CameraButton,
-	GaleryButton,
-} from '../components/input/ImagePickerButton';
-import DailyJournal from '../components/Journal/DailyJournal';
-import { useAppContext } from '../lib/useAppContext';
+import { CameraButton, GaleryButton } from '../../components/input/ImagePickerButton'; //prettier-ignore
+import DailyJournal, { DailyJournalSkeleton } from '../../components/Journal/DailyJournal'; //prettier-ignore
+import { useCreateEntryModal } from '../../components/Modal/CreateEntry/CreateEntryContext';
+import { useAppContext } from '../../lib/useAppContext';
 
 export default function Home() {
 	const { isSupportCapture, isMobile, pinned } = useAppContext(); //prettier-ignore
@@ -15,16 +12,16 @@ export default function Home() {
 	const { data } = useSWR<JournalItem[]>('/journals');
 
 	return (
-		<Container py="xs" size="sm">
+		<Container py="xs" px={{ base: '0px', xs: 'sm' }} size="sm">
 			<Stack gap="xs">
 				<Paper
+					className="fluid-Paper"
 					component={Group}
 					wrap="nowrap"
 					withBorder
 					px="sm"
 					py="sm"
 					justify="space-between"
-					mb="4"
 				>
 					<Avatar
 						tabIndex={0}
@@ -66,15 +63,13 @@ export default function Home() {
 					)}
 				</Paper>
 
-				<Stack gap="md">
+				<Stack gap="sm">
 					{data ? (
 						data.map((journal) => (
 							<DailyJournal data={journal} key={journal.date} />
 						))
 					) : (
-						<Center p="md">
-							<Loader type="dots" />
-						</Center>
+						<DailyJournalSkeleton />
 					)}
 				</Stack>
 			</Stack>

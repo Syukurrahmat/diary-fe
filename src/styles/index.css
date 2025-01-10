@@ -1,23 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900');
- 
+
 body {
     overflow-y: scroll !important;
+}
+
+.radius-md {
+    border-radius: var(--mantine-radius-md);
 }
 
 .inspect>* {
     border: 1px solid red;
 }
 
-.borderedModalHeader {
+.borderBottom {
     border-block-end: 1px solid var(--mantine-color-gray-2)
 }
 
-.borderedModalFooter {
+.borderTop {
     border-block-start: 1px solid var(--mantine-color-gray-2)
-}
-
-.pagesAsSlideWrapper>* {
-    max-width: 100%;
 }
 
 .map-marker-centered {
@@ -40,6 +40,13 @@ nav.mobile a:active {
     background: var(--mantine-color-blue-0);
 }
 
+@media (max-width: 36em) {
+    .fluid-Paper {
+        border-radius: 0;
+        border-inline: none;
+    }
+}
+
 nav.mobile a:not([aria-current="page"]) {
     color: var(--mantine-color-gray-6)
 }
@@ -47,7 +54,6 @@ nav.mobile a:not([aria-current="page"]) {
 .simple-stoast {
     background-color: var(--mantine-color-gray-2);
 }
-
 
 .myCalender button[data-disabled]:not(.dayCell) {
     opacity: 0.7;
@@ -59,9 +65,12 @@ nav.mobile a:not([aria-current="page"]) {
     background-color: var(--mantine-color-gray-2);
 }
 
-.custom-checkbox{
+.custom-checkbox {
     border-color: alpha(var(--color), 0.3);
 }
-.custom-checkbox:not(:checked){
+
+.custom-checkbox:not(:checked) {
     background-color: alpha(var(--color), 0.1);
 }
+
+ 

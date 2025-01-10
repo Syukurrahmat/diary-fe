@@ -1,9 +1,9 @@
 import { Container, SegmentedControl, Stack } from '@mantine/core';
 import { useHash } from '@mantine/hooks';
 import useSWR from 'swr';
-import DailyTracker from '../components/Tracker/DailyTracker';
-import WeeklyTracker from '../components/Tracker/WeeklyTracker';
-import OverallTracker from '../components/Tracker/OveralTracker';
+import DailyTracker from '../../components/Tracker/DailyTracker';
+import WeeklyTracker from '../../components/Tracker/WeeklyTracker';
+import OverallTracker from '../../components/Tracker/OveralTracker';
 
 export default function Tracker() {
 	const [value, setValue] = useHash({ getInitialValueInEffect: true });
@@ -19,7 +19,6 @@ export default function Tracker() {
 						{ label: 'Hari ini', value: '#' },
 						{ label: 'Mingguan', value: '#week' },
 						{ label: 'Keseluruhan', value: '#overall' },
-						
 					]}
 				/>
 				{value == '' && <DailyTracker data={data || []} />}

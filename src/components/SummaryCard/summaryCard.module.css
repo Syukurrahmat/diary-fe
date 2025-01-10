@@ -1,29 +1,28 @@
-.root {
+.root{
     padding-inline-start: calc(var(--mantine-spacing-md) - 0.25 * 16px);
 }
-
-/* CSS untuk icon */
 .icon {
-    width: 16px;
-    margin-top: 5px;
+    width: 18px;
+    margin-top: 3px;
     margin-inline-end: var(--mantine-spacing-xs);
 }
 
 .body {
-    gap: calc(var(--mantine-spacing-xs) *0.5)
+    gap: calc(var(--mantine-spacing-xs) *0.5);
+    
 }
 
-/* CSS untuk title */
 .title {
     font-weight: 600;
-    font-size: var(--mantine-font-size-lg);
+    font-size: var(--mantine-font-size-md);
 }
 
 .label {
     width: 100%;
+    
 }
 
-/* CSS untuk message */
 .message {
     overflow: visible;
+    margin-right: var(--mantine-spacing-xs);
 }

@@ -1,30 +1,40 @@
-import { Box } from '@mantine/core';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
-import { ReactNode, useCallback, useMemo, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { useCookies } from 'react-cookie';
+import LoadingScreen from '../../components/LoadingScreen';
 import { API_URL } from '../constants';
 import { AuthContext } from './authContext';
 
+const refressRequest = () => axios.post(API_URL + '/auth/refresh', null, { withCredentials: true }); //prettier-ignore
+
 export default function AuthProvider({ children }: { children: ReactNode }) {
-	const [auth, setAuth, removeAuth] = useCookies(['access', 'refresh']);
+	const [auth, setAuth, removeAuth] = useCookies(['access']);
 	const [isAuthenticated, setIsAuthenticated] = useState(Boolean(auth.access));
+	const [isLoading, setIsLoading] = useState(true);
+
+	useEffect(() => {
+		if (!auth.access) {
+			refressRequest()
+				.then((response) => {
+					const { accessToken } = response.data.data;
+					signIn(accessToken);
+				})
+				.finally(() => setIsLoading(false));
+		} else {
+			setIsLoading(false);
+		}
+	}, [auth.access]);
 
 	const signIn = useCallback(
-		(accessToken: string, refreshToken: string) => {
+		(accessToken: string) => {
 			const payloadAccessToken = jwtDecode(accessToken);
-			const payloadRefreshToken = jwtDecode(refreshToken);
 
 			setAuth('access', accessToken, {
 				secure: true,
 				expires: new Date(payloadAccessToken.exp! * 1000),
 			});
-			setAuth('refresh', refreshToken, {
-				secure: true,
-				expires: new Date(payloadRefreshToken.exp! * 1000),
-			});
 
-			console.log('djdjddjj');
 			setIsAuthenticated(true);
 		},
 		[setAuth]
@@ -32,7 +42,6 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
 	const signOut = useCallback(() => {
 		removeAuth('access');
-		removeAuth('refresh');
 		setIsAuthenticated(false);
 	}, [removeAuth]);
 
@@ -59,19 +68,13 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 				}
 
 				originalRequest._retry = true;
-				const refreshToken = auth.refresh;
-				if (!refreshToken) return Promise.reject(error);
 
 				console.log('refreshing');
-				axios
-					.post(API_URL + '/auth/refresh', null, {
-						headers: {
-							Authorization: `Bearer ${auth.refresh}`,
-						},
-					})
+
+				refressRequest()
 					.then((response) => {
-						const { accessToken, refreshToken } = response.data.data;
-						signIn(accessToken, refreshToken);
+						const { accessToken } = response.data.data;
+						signIn(accessToken);
 						originalRequest.headers.Authorization = `Bearer ${accessToken}`;
 						console.log('refreshing success');
 						return myAxios(originalRequest);
@@ -79,12 +82,15 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 					.catch((refreshError) => {
 						console.error('Failed to refresh token.', refreshError);
 						setIsAuthenticated(false);
+						window.location.href = '/auth/signin';
 						return Promise.reject(refreshError);
 					});
 			}
 		);
 		return myAxios;
-	}, [auth.access, auth.refresh, signIn]);
+	}, [auth.access, signIn]);
+
+	if (isLoading) return <LoadingScreen />;
 
 	return (
 		<AuthContext.Provider
@@ -93,7 +99,6 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 				signOut,
 				isAuthenticated,
 				fetcher,
-				Authorization: 'Bearer' + auth.access,
 			}}
 			children={children}
 		/>

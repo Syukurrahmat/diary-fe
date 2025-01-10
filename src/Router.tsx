@@ -1,16 +1,19 @@
+import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import AppProvider from './App';
+import AuthLayout from './components/Layout/AuthLayout';
 import { PrivateRouter } from './lib/Auth/PrivateRouter';
-import Signin from './pages/Signin';
-import React from 'react';
+import Register from './pages/auth/Register';
+import Signin from './pages/auth/Signin';
 
-const Layout = React.lazy(() => import('./components/Layout/Layout'));
-const Calender = React.lazy(() => import('./pages/Calender'));
-const CalenderDateDetail = React.lazy(() => import('./pages/CalenderDetail'));
-const Home = React.lazy(() => import('./pages/Home'));
-const Profile = React.lazy(() => import('./pages/Profile'));
-const Tracker = React.lazy(() => import('./pages/Tracker'));
-
+const Layout = React.lazy(() => import('./components/Layout/AppLayout'));
+const Calender = React.lazy(() => import('./pages/app/Calender'));
+const CalenderDateDetail = React.lazy(
+	() => import('./pages/app/CalenderDetail')
+);
+const Home = React.lazy(() => import('./pages/app/Home'));
+const Profile = React.lazy(() => import('./pages/app/Profile'));
+const Tracker = React.lazy(() => import('./pages/app/Tracker'));
 
 export const router = createBrowserRouter([
 	{
@@ -31,8 +34,13 @@ export const router = createBrowserRouter([
 			},
 		],
 	},
+
 	{
-		path: '/signin',
-		element: <Signin />,
+		path: '/auth',
+		element: <AuthLayout />,
+		children: [
+			{ path: '/auth/signin', element: <Signin /> },
+			{ path: '/auth/register', element: <Register /> },
+		],
 	},
 ]);

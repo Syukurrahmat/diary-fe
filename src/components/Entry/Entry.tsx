@@ -21,7 +21,7 @@ export function Entry({ data }: { data: EntryItem }) {
 			<Stack gap="4" flex="1">
 				<Stack gap="4">
 					<Group justify="space-between" wrap="nowrap" align="start">
-						<Title h={rem(24)} size="lg" fw="600" c="blue.5">
+						<Title h={rem(24)} size="md" fw="500" c="blue.5">
 							{moment(data.datetime).format('HH:mm')}
 						</Title>
 						<EntryMenu />

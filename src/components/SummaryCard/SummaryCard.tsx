@@ -1,7 +1,7 @@
 import { ActionIcon, Alert, AlertProps, Group, rem, Stack, Text, ThemeIcon, Tooltip } from '@mantine/core'; //prettier-ignore
-import { EllipsisIcon, PenIcon, Sparkles } from 'lucide-react';
+import { Edit3Icon, EllipsisIcon, Sparkles } from 'lucide-react';
 import { useMemo } from 'react';
-import CreateSummaryModal from '../CretateSummary/CreateSummary';
+import CreateSummaryModal from '../Modal/CretateSummary/CreateSummary';
 import LucideIconLazy from '../LucideIconLazy';
 import styles from './summaryCard.module.css';
 
@@ -9,14 +9,11 @@ interface TrackerCard extends AlertProps {
 	habits: JournalItemHabit[];
 	summary?: Summary;
 	date: string;
+	inJournal?: boolean;
 }
 
-export default function SummaryCard({
-	habits,
-	summary,
-	date,
-	...p
-}: TrackerCard) {
+export default function SummaryCard(props: TrackerCard) {
+	const { habits, summary, date, inJournal = true, ...p } = props;
 	const isComplete = Boolean(summary && habits.length);
 
 	const HabitList = useMemo(
@@ -39,11 +36,11 @@ export default function SummaryCard({
 
 	return (
 		<Alert
-			classNames={styles}
 			variant="light"
 			radius="0"
+			classNames={styles}
 			color={isComplete ? 'blue' : 'orange'}
-			icon={isComplete ? <Sparkles /> : <PenIcon />}
+			icon={isComplete ? <Sparkles /> : <Edit3Icon />}
 			{...p}
 			title={
 				<Group justify="space-between">
@@ -52,7 +49,6 @@ export default function SummaryCard({
 						size={rem(24)}
 						color="gray"
 						variant="transparent"
-						className="entriMenuIcon"
 						radius="sm"
 						children={<EllipsisIcon size="20" />}
 					/>
@@ -67,7 +63,7 @@ export default function SummaryCard({
 						<Text size="sm" c="dimmed">
 							<Text c="dark" component="span">
 								Kamu telah :{' '}
-							</Text>{' '}
+							</Text>
 							{habits.map((e) => e.name).join(', ')}
 						</Text>
 					</Stack>
@@ -84,62 +80,5 @@ export default function SummaryCard({
 			</Stack>
 		</Alert>
 	);
-	// return data.summary ? (
-	// 	<FilledSummary habits={habits} summary={summary} {...p} />
-	// ) : (
-	// 	<UnfilledSummary date={date} {...p} />
-	// );
 }
-
-interface FilledSummary extends AlertProps {
-	habits: JournalItemHabit[];
-	summary: Summary;
-}
-
-export function FilledSummary({ habits, summary, ...p }: FilledSummary) {
-	const HabitList = useMemo(
-		() =>
-			habits.map((e) => (
-				<Tooltip label={e.name} key={e.id} openDelay={300}>
-					<ThemeIcon radius="xl" variant="outline" size={rem(44)} p="6">
-						<LucideIconLazy name={e.icon as any} />
-					</ThemeIcon>
-				</Tooltip>
-			)),
-		[habits]
-	);
-
-	return (
-		<Alert
-			classNames={styles}
-			variant="light"
-			color="blue"
-			radius="0"
-			icon={<Sparkles />}
-			{...p}
-			title={
-				<Group justify="space-between">
-					Tentang Hari ini
-					<ActionIcon
-						size={rem(24)}
-						color="gray"
-						variant="transparent"
-						className="entriMenuIcon"
-						radius="sm"
-						children={<EllipsisIcon size="20" />}
-					/>
-				</Group>
-			}
-		>
-			<Text size="sm">{summary?.content}</Text>
-			{!!habits.length && (
-				<Stack mt="md">
-					<Group justify="center">{HabitList}</Group>
-					<Text size="sm" c="dimmed">
-						{habits.map((e) => e.name).join(', ')}
-					</Text>
-				</Stack>
-			)}
-		</Alert>
-	);
-}
+ 

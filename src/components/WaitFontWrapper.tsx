@@ -1,6 +1,5 @@
-import { Center } from '@mantine/core';
-import { Loader } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import LoadingScreen from './LoadingScreen';
 
 export default function WaitFontWrapper({ children }: any) {
 	const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -9,13 +8,7 @@ export default function WaitFontWrapper({ children }: any) {
 		document.fonts.ready.then(() => setFontsLoaded(true));
 	}, []);
 
-	if (!fontsLoaded) {
-		return (
-			<Center bg="#f8f9fa" h="100vh">
-				<Loader size="sm" color="gray" stroke="30" />
-			</Center>
-		);
-	}
+	if (!fontsLoaded) return <LoadingScreen />;
 
 	return children;
 }

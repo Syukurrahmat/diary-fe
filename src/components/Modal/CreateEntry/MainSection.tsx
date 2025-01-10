@@ -3,12 +3,12 @@ import { Calendar, HashIcon, MapPinIcon } from 'lucide-react';
 import moment from 'moment';
 import { useRef, useState } from 'react';
 import { SwiperSlide } from 'swiper/react';
-import { useIsSupportCapture } from '../../lib/hooks';
-import { ICreateFormSection } from '../../types/additional';
-import ImagesPreviewItem from '../ImagesPreviewItem';
-import HashtagInput from '../input/HashtagInput';
-import { CameraButton, GaleryButton } from '../input/ImagePickerButton';
-import MySwiper from '../MySwiper';
+import { useIsSupportCapture } from '../../../lib/hooks';
+import { ICreateFormSection } from '../../../types/additional';
+import ImagesPreviewItem from '../../ImagesPreviewItem';
+import HashtagInput from '../../input/HashtagInput';
+import { CameraButton, GaleryButton } from '../../input/ImagePickerButton';
+import MySwiper from '../../MySwiper';
 
 export default function MainSection({ form }: ICreateFormSection) {
 	const isSupportCapture = useIsSupportCapture();
@@ -38,7 +38,11 @@ export default function MainSection({ form }: ICreateFormSection) {
 							'YYYY-MM-DD HH:mm'
 						).format('DD MMM YYYY, HH:mm')}
 					</Button>
-					<Collapse in={!!formValues.coordinate || formValues.userLocationIsLoading}>
+					<Collapse
+						in={
+							!!formValues.coordinate || formValues.userLocationIsLoading
+						}
+					>
 						<Group wrap="nowrap" pt="4">
 							<Button
 								w="fit-content"
@@ -138,13 +142,7 @@ export default function MainSection({ form }: ICreateFormSection) {
 					/>
 				</Collapse>
 			</Box>
-			<Box
-				pos="sticky"
-				bottom={0}
-				className="borderedModalFooter"
-				bg="white"
-				p="sm"
-			>
+			<Box className="borderTop" bg="white" p="sm">
 				<Group wrap="nowrap" flex="1">
 					<Group wrap="nowrap" flex="1">
 						{isSupportCapture && (

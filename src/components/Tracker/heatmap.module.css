@@ -1,6 +1,6 @@
 .wrapper {
     gap: var(--mantine-spacing-xs);
-    --item-size: 16px
+    --item-size: 14px
 }
 
 .monthNameGrid {

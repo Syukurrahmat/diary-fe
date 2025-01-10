@@ -1,13 +1,5 @@
-import {
-	Box,
-	Group,
-	Paper,
-	ScrollArea,
-	Stack,
-	Text,
-	ThemeIcon,
-	Title,
-} from '@mantine/core';
+import { Box, Group, NumberInput, Paper, Space, Stack, Text, ThemeIcon, Title } from '@mantine/core'; //prettier-ignore
+import moment from 'moment';
 import LucideIconLazy from '../LucideIconLazy';
 import { HabitHeatmap } from './HabitHeatmap';
 
@@ -21,7 +13,7 @@ export default function OverallTracker({ data }: { data: Habit[] }) {
 			<Stack gap="xs">
 				{data.map((e) => (
 					<Paper key={e.id} p="xs" withBorder>
-						<Group flex="1" gap='sm'>
+						<Group flex="1" gap="sm">
 							<ThemeIcon
 								color={e.color}
 								variant="light"
@@ -34,10 +26,24 @@ export default function OverallTracker({ data }: { data: Habit[] }) {
 							<Text flex="1" fz="sm">
 								{e.name}
 							</Text>
+							<Space flex="1" />
+							<Group gap="xs">
+								<NumberInput
+									w="80"
+									clampBehavior="strict"
+									max={moment().year()}
+									min={1980}
+								/>
+							</Group>
 						</Group>
-						<ScrollArea py="md">
+						<Box
+							style={{
+								overflow: 'auto',
+							}}
+							py="md"
+						>
 							<HabitHeatmap color={e.color} />
-						</ScrollArea>
+						</Box>
 					</Paper>
 				))}
 			</Stack>

@@ -1,34 +1,33 @@
-import { AppShell, Button, Group, NavLink, Space, Stack, Text, ThemeIcon } from '@mantine/core'; //prettier-ignore
+import { AppShell, Box, Button, Group, NavLink, Space, Stack, Text, ThemeIcon } from '@mantine/core'; //prettier-ignore
 import { NotebookTabsIcon, PlusIcon } from 'lucide-react'; //prettier-ignore
 import { NavLink as NavLinkRouter } from 'react-router-dom'; //prettier-ignore
 import { useAppContext } from '../../lib/useAppContext';
-import { useCreateEntryModal } from '../CreateEntry/CreateEntryContext';
-import { navList } from './Layout';
+import { useCreateEntryModal } from '../Modal/CreateEntry/CreateEntryContext';
+import { NavList } from './AppLayout';
 
-export default function NavBar() {
-	const { isMobile, } = useAppContext(); //prettier-ignore
+export default function NavBar({ navList }: { navList: NavList }) {
+	const { isMobile } = useAppContext();
 	const createEntryModal = useCreateEntryModal();
 
 	return !isMobile ? (
 		<AppShell.Navbar component="nav">
-			<Stack p="sm" gap="xs">
-				<Group p="sm" gap="xs" wrap="nowrap">
-					<ThemeIcon
-						variant="transparent"
-						children={<NotebookTabsIcon />}
-					/>
-					<Text component="h2" c="blue" fw="600" children="Lelana" />
+			<Stack px="md" gap="6">
+				<Group py="md" gap="xs" wrap="nowrap">
+					<ThemeIcon size="36" children={<NotebookTabsIcon size="24" />} />
+					<Box>
+						<Text component="h2" c="blue" fw="600" children="Lelana" />
+						<Text fz="xs" lineClamp={1} children="Syukur Rahmatullah" />
+					</Box>
 				</Group>
 				<Space />
 				{navList.map(({ to, label, Icon }) => (
 					<NavLink
-						className="mantine-active"
+						className="mantine-active radius-md"
 						component={NavLinkRouter}
-						style={{ borderRadius: 'var(--mantine-radius-md)' }}
 						label={label}
 						to={to}
 						key={to}
-						leftSection={<Icon size="22" />}
+						leftSection={<Icon size="18" />}
 					/>
 				))}
 				<Space />
@@ -36,7 +35,8 @@ export default function NavBar() {
 				<Button
 					onClick={createEntryModal.open}
 					leftSection={<PlusIcon size="20" />}
-					children="Buat Enssstri"
+					variant="light"
+					children="Buat Entri"
 				/>
 			</Stack>
 		</AppShell.Navbar>

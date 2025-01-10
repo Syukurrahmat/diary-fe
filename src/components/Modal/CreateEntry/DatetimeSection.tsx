@@ -8,11 +8,9 @@ import {
 	Title,
 } from '@mantine/core';
 import { ArrowLeft } from 'lucide-react';
-import { ICreateFormSection } from '../../types/additional';
+import { ICreateFormSection } from '../../../types/additional';
 
 export default function DatetimeSection({ form }: ICreateFormSection) {
-	form.watch('date', () => form.setFieldValue('datetimeEdited', true));
-	form.watch('time', () => form.setFieldValue('datetimeEdited', true));
 
 	return (
 		<Stack gap="0" h="100%">
@@ -50,7 +48,7 @@ export default function DatetimeSection({ form }: ICreateFormSection) {
 				</Group>
 			</Box>
 			<Group
-				className="borderedModalFooter"
+				className="borderTop"
 				pos="sticky"
 				bottom={0}
 				bg="white"

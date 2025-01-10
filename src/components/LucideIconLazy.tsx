@@ -11,7 +11,7 @@ export default function LucideIconLazy({ name, ...props }: IconProps) {
 	const LucideIcon = lazy(dynamicIconImports[name]);
 
 	return (
-		<Suspense fallback={<Loader color='gray' size='sm'/>}>
+		<Suspense fallback={<Loader color="gray" size="sm" />}>
 			<LucideIcon {...props} />
 		</Suspense>
 	);

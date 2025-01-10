@@ -1,0 +1,34 @@
+.button {
+    cursor: pointer;
+
+    .checked {
+        display: none;
+    }
+
+    &[data-checked="true"] .checked {
+        display: initial;
+    }
+}
+
+.icon {
+
+    &[data-checked="true"] {
+        border: 1px solid red !important
+    }
+}
+
+
+
+/* .iconGroup:hover {
+
+    & .icon {
+        color: var(--mantine-color-gray-5);
+    }
+}
+
+.icon{
+
+.iconGroup .icon:hover {
+    opacity: 1;
+    color:initial
+} */

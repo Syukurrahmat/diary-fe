@@ -9,8 +9,7 @@ type CreateEntryForm = {
     section : CreateEntryFormSection
     coordinateEdited: boolean,
     userLocationIsLoading: boolean,
-    datetimeEdited: boolean
-};
+ };
 
 type MyLatLng = {
     lat: number,
@@ -93,4 +92,12 @@ type Habit = {
     name: string,
     color: string,
     icon: string
+}
+
+
+interface CustomInputProps {
+	value?: string;
+	defaultValue?: string;
+	onChange?: (value: string) => void;
+	error?: string;
 }

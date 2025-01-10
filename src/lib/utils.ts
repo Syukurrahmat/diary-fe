@@ -39,7 +39,7 @@ export const qs = (json: Record<string, any>) => {
 };
 export const getSlideSectionProps = (key: string | number) => {
     const isMain = key === 0 || key === 'main';
-    
+
     return {
         initial: {
             x: isMain ? '-100%' : '100%',
@@ -51,3 +51,9 @@ export const getSlideSectionProps = (key: string | number) => {
         key
     };
 };
+
+export function getRandomItem<T>(array: T[]) {
+    if (array.length === 0) throw new Error("Array tidak boleh kosong.");
+    const randomIndex = Math.floor(Math.random() * array.length);
+    return array[randomIndex];
+}

@@ -1,14 +1,13 @@
 import { Modal } from '@mantine/core'; //prettier-ignore
 import { useForm } from '@mantine/form';
-import { useDisclosure } from '@mantine/hooks';
 import moment from 'moment';
 import { AnimatePresence, motion } from 'motion/react';
 import { DOMAttributes } from 'react';
-import { getUserLocation } from '../../lib/hooks';
-import { useAppContext } from '../../lib/useAppContext';
-import { filetoBase64, getSlideSectionProps } from '../../lib/utils';
-import styles from '../../styles/myModal.module.css';
-import { LoadingToast } from '../LoadingToast';
+import { getUserLocation, useModelDiscloure } from '../../../lib/hooks';
+import { useAppContext } from '../../../lib/useAppContext';
+import { filetoBase64, getSlideSectionProps } from '../../../lib/utils';
+import styles from '../../../styles/myModal.module.css';
+import { LoadingToast } from '../../LoadingToast';
 import { CreateEntryContext } from './CreateEntryContext';
 import DatetimeSection from './DatetimeSection';
 import LocationSection from './LocationSection';
@@ -33,7 +32,6 @@ export default function CreateEntryProvider({ children }: DOMAttributes<any>) {
 			section: 'main',
 			date: moment().format('YYYY-MM-DD'),
 			time: moment().format('HH:mm'),
-			datetimeEdited: false,
 			coordinateEdited: false,
 			userLocationIsLoading: false,
 		},
@@ -41,17 +39,18 @@ export default function CreateEntryProvider({ children }: DOMAttributes<any>) {
 		onSubmitPreventDefault: 'always',
 	});
 
-	const { section, datetimeEdited, coordinateEdited } = form.getValues();
+	const { section, coordinateEdited } = form.getValues();
 
-	const [opened, { open, close }] = useDisclosure(false, {
+	const [opened, { open, close }] = useModelDiscloure(false, {
 		onOpen: () => {
-			window.history.pushState(null, '', window.location.href);
-			window.addEventListener('popstate', close);
+			 
+			if (!form.isTouched('date') || !form.isTouched('time')) {
+				// const [dateStr, timeStr] = moment()
+				// 	.format('YYYY-MM-DD HH:mm')
+				// 	.split(' ');
 
-			if (!datetimeEdited) {
-				const currentTime = moment();
-				form.setFieldValue('date', currentTime.format('YYYY-MM-DD'));
-				form.setFieldValue('time', currentTime.format('HH:mm'));
+				// form.setFieldValue('date', dateStr);
+				// form.setFieldValue('time', timeStr);
 			}
 
 			if (!coordinateEdited) {
@@ -69,9 +68,6 @@ export default function CreateEntryProvider({ children }: DOMAttributes<any>) {
 						form.setFieldValue('userLocationIsLoading', false)
 					);
 			}
-		},
-		onClose: () => {
-			window.removeEventListener('popstate', close);
 		},
 	});
 

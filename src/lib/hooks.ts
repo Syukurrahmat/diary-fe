@@ -1,3 +1,4 @@
+import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 
 export const useIsSupportCapture = () => {
@@ -48,18 +49,18 @@ export const getUserLocation = () => {
 	})
 }
 
-export const useModalBackButtonHandler = (opened: boolean, aditionalCbOnOpen?: () => any) => {
-	useEffect(() => {
-		if (opened) {
-			if (aditionalCbOnOpen) aditionalCbOnOpen()
+export const useModelDiscloure : typeof useDisclosure = (initialState, callBacks) => {
+	const [opened, { open, close, toggle }] = useDisclosure(initialState, {
+		onOpen: () => {
 			window.history.pushState(null, '', window.location.href);
 			window.addEventListener('popstate', close);
-		} else {
+			if(callBacks?.onOpen) callBacks.onOpen()
+		},
+		onClose: () => {
 			window.removeEventListener('popstate', close);
-		}
+			if(callBacks?.onClose) callBacks.onClose()
+		},
+	});
 
-		return () => {
-			window.removeEventListener('popstate', close);
-		};
-	}, [opened]);
+	return [opened, { open, close, toggle }]
 }

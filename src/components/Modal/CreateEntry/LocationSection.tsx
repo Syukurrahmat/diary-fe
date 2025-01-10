@@ -1,4 +1,4 @@
-import pinMap from '../../assets/mapMarker-red.svg';
+import pinMap from '../../../assets/mapMarker-red.svg';
 
 import 'leaflet/dist/leaflet.css';
 import { useMapEvents } from 'react-leaflet';
@@ -23,9 +23,9 @@ import { Map } from 'leaflet';
 import { ArrowLeft, MapPin, SearchIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import useSWR, { mutate } from 'swr';
-import { getReverseCoordinateUrl } from '../../lib/utils';
-import { ICreateFormSection } from '../../types/additional';
-import DisplayMap from '../DisplayMap';
+import { getReverseCoordinateUrl } from '../../../lib/utils';
+import { ICreateFormSection } from '../../../types/additional';
+import DisplayMap from '../../DisplayMap';
 
 const FALLBACK_COORD = { lat: -7.556258, lng: 110.821336 };
 
@@ -99,7 +99,7 @@ export default function LocationSection({ form }: ICreateFormSection) {
 				</Center>
 			</Group>
 
-			<Group p="sm" justify="end" className="borderedModalFooter">
+			<Group p="sm" justify="end" className="borderTop">
 				<Button
 					onClick={() => form.setFieldValue('section', 'main')}
 					children="Oke"

@@ -19,7 +19,7 @@ export default function DailyTracker({ data }: { data: Habit[] }) {
 			<Title size="h4" c="gray.8">
 				Habit Hari ini
 			</Title>
-			<Stack gap="xs">
+			<Stack gap="6">
 				{data?.map((e) => (
 					<HabitsItem data={e} key={e.id} />
 				))}

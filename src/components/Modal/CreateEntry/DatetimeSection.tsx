@@ -9,6 +9,7 @@ import {
 } from '@mantine/core';
 import { ArrowLeft } from 'lucide-react';
 import { ICreateFormSection } from '../../../types/additional';
+import moment from 'moment';
 
 export default function DatetimeSection({ form }: ICreateFormSection) {
 
@@ -33,6 +34,7 @@ export default function DatetimeSection({ form }: ICreateFormSection) {
 						label="Tanggal"
 						type="date"
 						flex="1"
+						max={moment().format('YYYY-MM-DD')}
 						onClick={(e) => e.currentTarget.showPicker()}
 						key={form.key('date')}
 						{...form.getInputProps('date')}

@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Group, Text } from '@mantine/core'; //prettier-ignore
+import { ActionIcon, Box, Group, Input } from '@mantine/core'; //prettier-ignore
 import { useMemo, useState } from 'react';
 import { ICON_LIST } from '../../IconList.';
 import LucideIconLazy from '../../LucideIconLazy';
@@ -25,9 +25,7 @@ export function MyIconInput(props: CustomInputProps & { color: string }) {
 
 	return (
 		<Box>
-			<Text fz="sm" fw="500" mb="4">
-				Ikon {selectedIcon}
-			</Text>
+			<Input.Label mb="4">Ikon</Input.Label>
 			<Group gap="6" justify="center" className={colorSwatchStyle.iconGroup}>
 				{iconList.map((icon) => (
 					<ActionIcon

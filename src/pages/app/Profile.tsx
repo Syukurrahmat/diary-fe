@@ -1,6 +1,7 @@
 import { Button, Container, Stack } from '@mantine/core';
 import { useState } from 'react';
 import { useAuthContext } from '../../lib/Auth/authContext';
+import { mutate } from 'swr';
 
 export default function Profile() {
 	const { signOut, fetcher } = useAuthContext();
@@ -8,15 +9,13 @@ export default function Profile() {
 
 	const onClick = () => {
 		setIsSignOuting(true);
+
 		fetcher
-			.post(
-				'/auth/signout',
-				{},
-				{
-					withCredentials: true,
-				}
-			)
-			.then(() => signOut())
+			.post('/auth/signout', {}, { withCredentials: true })
+			.then(() => {
+				mutate(() => true, null, { revalidate: false });
+				signOut();
+			})
 			.finally(() => setIsSignOuting(false));
 	};
 	return (

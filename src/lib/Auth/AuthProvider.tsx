@@ -24,7 +24,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 		} else {
 			setIsLoading(false);
 		}
-	}, [auth.access]);
+	}, []);
 
 	const signIn = useCallback(
 		(accessToken: string) => {
@@ -51,10 +51,6 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 			headers: {
 				Authorization: `Bearer ${auth.access}`,
 				'Content-Type': 'application/json',
-			},
-			transformResponse: (e) => {
-				const response = JSON.parse(e);
-				return response.data;
 			},
 		});
 

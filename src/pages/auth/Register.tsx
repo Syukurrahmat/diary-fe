@@ -1,27 +1,19 @@
-import {
-	Alert,
-	Button,
-	Collapse,
-	Group,
-	PasswordInput,
-	Stack,
-	Text,
-	TextInput,
-	Title,
-} from '@mantine/core';
+import { Alert, Button, Collapse, ComboboxData, Group, PasswordInput, Select, Stack, Text, TextInput, Title } from '@mantine/core'; //prettier-ignore
 import { useForm } from '@mantine/form';
+import axios, { AxiosError } from 'axios';
 import { InfoIcon } from 'lucide-react';
-import { useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
-import PasswordInputWithStrengthMeter, {
-	PASSWORD_REQUIREMENTS,
-} from '../../components/input/PasswordInput';
+import { useEffect, useState } from 'react';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import MyPasswordInput, { PASSWORD_REQUIREMENTS } from '../../components/input/PasswordInput'; //prettier-ignore
 import { useAuthContext } from '../../lib/Auth/authContext';
+import { API_URL } from '../../lib/constants';
+import { handlerFormValidationError } from '../../lib/utils';
 
 type SubmitingState = 'idle' | 'loading' | 'fail';
 
 export default function Register() {
-	// const navigate = useNavigate();
+	const [timezones, setTimezone] = useState<ComboboxData>();
+	const navigate = useNavigate();
 	const { isAuthenticated } = useAuthContext();
 
 	const [submitingState, setSubmitingState] = useState<SubmitingState>('idle');
@@ -31,28 +23,42 @@ export default function Register() {
 		initialValues: {
 			email: '',
 			name: '',
+			timezone: '',
 			password: '',
 			confirmPassword: '',
 		},
 		onValuesChange: () => setSubmitingState('idle'),
 		validate: {
-			name: (value) =>
-				value.trim().length > 3 ? null : 'Nama harus lebih dari 3 karakter',
+			name: (value) => value.trim().length > 3 ? null : 'Nama harus lebih dari 3 karakter', //prettier-ignore
 			email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-			password: (value) =>
-				PASSWORD_REQUIREMENTS.every((req) => req.re.test(value))
-					? null
-					: 'Belum Memenuhi',
-			confirmPassword: (value, values) =>
-				value === values.password ? null : 'Kata Sandi harus sama',
+			password: (value) => PASSWORD_REQUIREMENTS.every((req) => req.re.test(value)) ? null : 'Belum Memenuhi', //prettier-ignore
+			confirmPassword: (value, values) => value === values.password ? null : 'Kata Sandi harus sama', //prettier-ignore
 		},
 	});
 
+	useEffect(() => {
+		import('../../lib/timezones').then((e) => {
+			setTimezone(e.default);
+			form.setFieldValue(
+				'timezone',
+				Intl.DateTimeFormat().resolvedOptions().timeZone
+			);
+		});
+	}, []);
+
 	if (isAuthenticated) return <Navigate to="/" />;
 
-	const onSubmit = form.onSubmit((value) => {
+	const onSubmit = form.onSubmit(({ confirmPassword, ...value }) => {
 		setSubmitingState('loading');
-		console.log(value);
+		axios
+			.post(API_URL + '/auth/signup', value)
+			.then(() => navigate('/auth/signin'))
+			.catch((error: AxiosError) => {
+				if (error.response?.status == 400) {
+					handlerFormValidationError(error, form);
+				}
+			})
+			.finally(() => setSubmitingState('idle'));
 	});
 
 	return (
@@ -65,7 +71,7 @@ export default function Register() {
 			</Stack>
 			<Stack gap="md">
 				<TextInput
-					label="Name"
+					label="Nama"
 					radius="sm"
 					autoComplete="name"
 					placeholder="Tulis Nama Kamu"
@@ -80,7 +86,23 @@ export default function Register() {
 					key={form.key('email')}
 					{...form.getInputProps('email')}
 				/>
-				<PasswordInputWithStrengthMeter
+				<Select
+					label="Zone Waktu"
+					placeholder="Pick value"
+					data={timezones || []}
+					searchable
+					checkIconPosition="right"
+					allowDeselect={false}
+					comboboxProps={{
+						transitionProps: { transition: 'pop-top-left' },
+					}}
+					nothingFoundMessage={
+						timezones ? 'Nothing found...' : 'Loading...'
+					}
+					key={form.key('timezone')}
+					{...form.getInputProps('timezone')}
+				/>
+				<MyPasswordInput
 					key={form.key('password')}
 					{...form.getInputProps('password')}
 				/>

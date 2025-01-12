@@ -1,1 +1,1 @@
-export const API_URL = 'https://192.168.1.106:3001'
+export const API_URL = 'https://perfect-lucretia-syukur-49c6198f.koyeb.app'

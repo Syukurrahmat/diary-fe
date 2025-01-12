@@ -2,13 +2,39 @@ import toastStyle from '../styles/simpleToast.module.css';
 import { notifications } from '@mantine/notifications';
 import { CheckIcon, TriangleAlertIcon } from 'lucide-react';
 
+export const successToast = (message: string) => {
+	notifications.show({
+		message,
+		classNames: toastStyle,
+		color: 'dark',
+		mih: '48px',
+		icon: <CheckIcon size="20" color="white" />,
+		withCloseButton: true,
+		loading: false,
+		autoClose: 4000,
+	});
+};
+
+export const failedToast = (message: string) => {
+	notifications.show({
+		message,
+		classNames: toastStyle,
+		mih: '48px',
+		autoClose: 4000,
+		icon: <TriangleAlertIcon size="20" color="white" />,
+		withCloseButton: true,
+		loading: false,
+		color: 'red',
+	});
+};
+
 export const LoadingToast = (message: string) => {
 	const id = notifications.show({
 		message,
 		autoClose: false,
 		withCloseButton: false,
 		loading: true,
-		classNames : toastStyle,
+		classNames: toastStyle,
 		color: 'dark',
 		mih: '48px',
 	});
@@ -20,7 +46,6 @@ export const LoadingToast = (message: string) => {
 			withCloseButton: true,
 		});
 	}, 10000);
-
 
 	return {
 		id,

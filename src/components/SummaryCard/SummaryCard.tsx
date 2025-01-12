@@ -7,7 +7,7 @@ import styles from './summaryCard.module.css';
 
 interface TrackerCard extends AlertProps {
 	habits: JournalItemHabit[];
-	summary?: Summary;
+	summary: string | null;
 	date: string;
 	inJournal?: boolean;
 }
@@ -56,7 +56,7 @@ export default function SummaryCard(props: TrackerCard) {
 			}
 		>
 			<Stack>
-				{summary && <Text size="sm">{summary.content}</Text>}
+				{summary && <Text size="sm">{summary}</Text>}
 				{!!habits.length && (
 					<Stack>
 						<Group justify="center">{HabitList}</Group>

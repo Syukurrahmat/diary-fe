@@ -7,6 +7,7 @@
     flex-direction: column;
     align-items: center;
     gap: 6px;
+    width: fit-content;
 
     & .label {
         color: var(--mantine-color-gray-7);

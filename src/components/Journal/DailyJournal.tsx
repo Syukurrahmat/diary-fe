@@ -4,8 +4,14 @@ import { useState } from 'react';
 import { relativeDay } from '../../lib/utils';
 import { Entry, EntryWrapper } from '../Entry/Entry';
 import SummaryCard from '../SummaryCard/SummaryCard';
+import moment from 'moment';
 
 export default function DailyJournal({ data }: { data: JournalItem }) {
+	const today = moment().startOf('d');
+	const hiddenSummary =
+		moment(data.date).isSame(today) &&
+		moment().isBefore(today.clone().hour(20));
+
 	const [isReversed, setIsReversed] = useState(false);
 	const displayEntries = isReversed
 		? data.entries.slice().reverse()
@@ -35,11 +41,13 @@ export default function DailyJournal({ data }: { data: JournalItem }) {
 					/>
 				</Group>
 			</Group>
-			<SummaryCard
-				habits={data.habits}
-				date={data.date}
-				summary={data.summary}
-			/>
+			{!hiddenSummary && (
+				<SummaryCard
+					habits={data.habits}
+					date={data.date}
+					summary={data.summary}
+				/>
+			)}
 			<EntryWrapper py="sm">
 				{displayEntries.map((e) => (
 					<Entry data={e} key={e.id} />
@@ -55,9 +63,9 @@ export function DailyJournalSkeleton({ count = 2 }: { count?: number }) {
 			{Array(count)
 				.fill(null)
 				.map((_, i) => (
-					<Paper key={i} withBorder className="fluid-Paper" >
+					<Paper key={i} withBorder className="fluid-Paper">
 						<Box p="md" h="55" className="borderBottom">
-							<Skeleton h="lg" w="400" maw='80%' />
+							<Skeleton h="lg" w="400" maw="80%" />
 						</Box>
 						<Stack gap="xl" pb="xl">
 							{Array(2)

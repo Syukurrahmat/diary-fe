@@ -3,15 +3,17 @@ import { useForm } from '@mantine/form';
 import moment from 'moment';
 import { AnimatePresence, motion } from 'motion/react';
 import { DOMAttributes } from 'react';
-import { getUserLocation, useModelDiscloure } from '../../../lib/hooks';
+import { useModalDiscloure } from '../../../lib/hooks';
+import { getUserLocation } from "../../../lib/utils";
 import { useAppContext } from '../../../lib/useAppContext';
-import { filetoBase64, getSlideSectionProps } from '../../../lib/utils';
+import { filetoBase64, getMotionSlideSectionProps } from '../../../lib/utils';
 import styles from '../../../styles/myModal.module.css';
 import { LoadingToast } from '../../LoadingToast';
 import { CreateEntryContext } from './CreateEntryContext';
 import DatetimeSection from './DatetimeSection';
 import LocationSection from './LocationSection';
 import MainSection from './MainSection';
+import { mutate } from 'swr';
 
 type SubmitValue = {
 	content: string;
@@ -41,7 +43,7 @@ export default function CreateEntryProvider({ children }: DOMAttributes<any>) {
 
 	const { section, coordinateEdited } = form.getValues();
 
-	const [opened, { open, close }] = useModelDiscloure(false, {
+	const [opened, { open, close }] = useModalDiscloure(false, {
 		onOpen: () => {
 			 
 			if (!form.isTouched('date') || !form.isTouched('time')) {
@@ -88,7 +90,10 @@ export default function CreateEntryProvider({ children }: DOMAttributes<any>) {
 
 		fetcher
 			.post('/entries', submitValue)
-			.then(() => loadingToast.success('Berhasil di posting'))
+			.then(() => {
+				loadingToast.success('Berhasil di posting')
+				mutate<JournalItem[]>('/journals')
+			})
 			.catch(() => loadingToast.failed('Gagal di posting'));
 	});
 
@@ -106,14 +111,14 @@ export default function CreateEntryProvider({ children }: DOMAttributes<any>) {
 				<form onSubmit={onSubmit}>
 					<AnimatePresence mode="popLayout" initial={false}>
 						{section === 'main' && (
-							<motion.div {...getSlideSectionProps('main')} key="main">
+							<motion.div {...getMotionSlideSectionProps('main')} key="main">
 								<MainSection form={form} />
 							</motion.div>
 						)}
 
 						{section == 'datepicker' && (
 							<motion.div
-								{...getSlideSectionProps('datepicker')}
+								{...getMotionSlideSectionProps('datepicker')}
 								key="datepicker"
 							>
 								<DatetimeSection form={form} />
@@ -121,7 +126,7 @@ export default function CreateEntryProvider({ children }: DOMAttributes<any>) {
 						)}
 						{section == 'locationpicker' && (
 							<motion.div
-								{...getSlideSectionProps('locationpicker')}
+								{...getMotionSlideSectionProps('locationpicker')}
 								key="locationpicker"
 							>
 								<LocationSection form={form} />

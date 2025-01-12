@@ -4,16 +4,17 @@ import moment from 'moment';
 import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useModelDiscloure } from '../../../lib/hooks';
+import { useModalDiscloure } from '../../../lib/hooks';
 import { useAppContext } from '../../../lib/useAppContext';
-import { getSlideSectionProps } from '../../../lib/utils';
+import { getMotionSlideSectionProps } from '../../../lib/utils';
 import styles from '../../../styles/myModal.module.css';
 import { LoadingToast } from '../../LoadingToast';
 import HabitsSelector from './HabitSelector';
+import { mutate } from 'swr';
 
 export default function CreateSummaryModal({ date }: { date: string }) {
 	const { fetcher } = useAppContext();
-	const [opened, { open }] = useModelDiscloure(false);
+	const [opened, { open }] = useModalDiscloure(false);
 	const [section, setSection] = useState<'main' | 'summary'>('main');
 	const navigate = useNavigate();
 
@@ -43,7 +44,10 @@ export default function CreateSummaryModal({ date }: { date: string }) {
 				habits: habits.map((e) => +e),
 				date: moment(date).startOf('d').toDate(),
 			})
-			.then(() => loadingToast.success('Berhasil di posting'))
+			.then(() => {
+				mutate('/journals')
+				loadingToast.success('Berhasil di posting')
+			})
 			.catch(() => loadingToast.failed('Gagal di posting'));
 	});
 
@@ -69,7 +73,7 @@ export default function CreateSummaryModal({ date }: { date: string }) {
 				<form onSubmit={onSubmit}>
 					<AnimatePresence mode="popLayout" initial={false}>
 						{section == 'main' && (
-							<motion.div {...getSlideSectionProps('main')} key="main">
+							<motion.div {...getMotionSlideSectionProps('main')} key="main">
 								<Box>
 									<Box px="md" pt="md">
 										<Text fw="600" mb="lg" ta="center">
@@ -96,7 +100,7 @@ export default function CreateSummaryModal({ date }: { date: string }) {
 						)}
 						{section == 'summary' && (
 							<motion.div
-								{...getSlideSectionProps('summary')}
+								{...getMotionSlideSectionProps('summary')}
 								key="summary"
 							>
 								<Box>

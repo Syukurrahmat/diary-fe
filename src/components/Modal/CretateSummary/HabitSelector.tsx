@@ -40,7 +40,7 @@ export default function HabitsSelector(props: Partial<CheckboxGroupProps>) {
 								size="xl"
 								children={<PlusIcon size="22" />}
 							/>
-							<Text size="sm" fw="600" c="gray">
+							<Text size="sm" ta='center' fw="600" c="gray">
 								Baru
 							</Text>
 						</Stack>

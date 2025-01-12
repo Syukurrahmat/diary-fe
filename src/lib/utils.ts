@@ -1,23 +1,8 @@
+import { UseFormReturnType } from "@mantine/form";
+import { AxiosError } from "axios";
 import moment, { Moment } from "moment";
 
 export const getReverseCoordinateUrl = ({ lat, lng }: MyLatLng) => `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&zoom=13&normalizeaddress=0&oceans=1&accept-language=id&format=json`
-export const getAutocompletePlaceUrl = (query: string) => `https://nominatim.openstreetmap.org/search?q=${query}&format=json&limit=5`
-
-export async function reverseCoordinate({ lat, lng }: MyLatLng) {
-    const resp = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&zoom=13&normalizeaddress=0&oceans=1&accept-language=id&format=json`
-    );
-
-    return await resp.json() as PlaceItem
-}
-
-export async function autocompleteSearch(query: string) {
-    const resp = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${query}&format=json&limit=5`
-    );
-
-    return await resp.json() as PlaceItem[]
-}
 
 export const filetoBase64 = (file: File) => new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
@@ -28,7 +13,6 @@ export const filetoBase64 = (file: File) => new Promise<string>((resolve, reject
 
 export const relativeDay = (date: Date | Moment | string) => {
     const diff = moment().diff(date, 'day')
-
     return diff == 0 ? 'Hari Ini' : diff == 1 ? 'Kemaren' : diff == 2 ? 'Lusa' : moment(date).format('DD MMM YYYY')
 }
 
@@ -37,7 +21,8 @@ export const qs = (json: Record<string, any>) => {
         .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(json[key]))
         .join('&');
 };
-export const getSlideSectionProps = (key: string | number) => {
+
+export const getMotionSlideSectionProps = (key: string | number) => {
     const isMain = key === 0 || key === 'main';
 
     return {
@@ -57,3 +42,40 @@ export function getRandomItem<T>(array: T[]) {
     const randomIndex = Math.floor(Math.random() * array.length);
     return array[randomIndex];
 }
+
+
+export const handlerFormValidationError = (
+    axiosError: AxiosError<any, any>,
+    form: UseFormReturnType<any>
+) => {
+    const messages = axiosError.response?.data?.message as string[];
+    if (!Array.isArray(messages) || !messages.length) return;
+
+    const errors = messages.reduce<Record<string, string[]>>(
+        (acc, message) => {
+            const field = message.split(' ')[0];
+            if (!acc[field]) acc[field] = [];
+            acc[field].push(message);
+            return acc;
+        },
+        {}
+    );
+
+    Object.entries(errors).forEach(([field, messages]) => {
+        form.setFieldError(field, messages.join(', '));
+    });
+};
+
+export const getUserLocation = () => {
+    return new Promise<MyLatLng | null>((res) => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((pos) => {
+                const { latitude: lat, longitude: lng } = pos.coords;
+                res({ lat, lng });
+            }, () => res(null));
+        } else {
+            res(null);
+        }
+    });
+};
+

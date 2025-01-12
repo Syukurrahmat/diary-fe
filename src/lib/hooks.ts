@@ -36,20 +36,7 @@ export const useUserLocation = () => {
 }
 
 
-export const getUserLocation = () => {
-	return new Promise<MyLatLng | null>((res) => {
-		if (navigator.geolocation) {
-			navigator.geolocation.getCurrentPosition((pos) => {
-				const { latitude: lat, longitude: lng } = pos.coords;
-				res({ lat, lng })
-			}, () => res(null));
-		} else {
-			res(null);
-		}
-	})
-}
-
-export const useModelDiscloure : typeof useDisclosure = (initialState, callBacks) => {
+export const useModalDiscloure : typeof useDisclosure = (initialState, callBacks) => {
 	const [opened, { open, close, toggle }] = useDisclosure(initialState, {
 		onOpen: () => {
 			window.history.pushState(null, '', window.location.href);

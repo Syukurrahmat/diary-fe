@@ -1,3 +1,18 @@
+type JournalItem = {
+    id: number
+    date: string
+    entries: Entry[]
+    habits: {
+        id: number,
+        name: string,
+        icon: string,
+        color: string,
+        deleted: boolean
+    }[]
+    summary: string | null
+}
+
+
 type CreateEntryForm = {
     content: string;
     date: string;
@@ -47,6 +62,7 @@ type JournalItem = {
     habits: JournalItemHabit[]
     summary?: Summary
 }
+
 type JournalItemHabit = {
     id: number,
     name: string,
@@ -91,7 +107,11 @@ type Habit = {
     id: number,
     name: string,
     color: string,
-    icon: string
+    icon: string,
+    order: number,
+    createdAt: Date;
+    updatedAt: Date;
+    deletedAt: Date | null;
 }
 
 

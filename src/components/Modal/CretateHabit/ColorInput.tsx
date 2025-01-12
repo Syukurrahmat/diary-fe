@@ -1,4 +1,4 @@
-import { Box, CheckIcon, ColorSwatch, Group, Text } from '@mantine/core'; //prettier-ignore
+import { Box, CheckIcon, ColorSwatch, Group, Input } from '@mantine/core'; //prettier-ignore
 import { useState } from 'react';
 import colorSwatchStyle from './ColorSwatchRadio.module.css';
 
@@ -19,7 +19,7 @@ export const TEMPLATE_COLOR_LIST = [
 ];
 
 export default function MyColorInput(props: CustomInputProps) {
-	const { value, defaultValue, onChange } = props;
+	const { value, onChange } = props;
 	const [color, setColor] = useState(value);
 
 	const handleColorChange = (selectedColor: string) => {
@@ -29,9 +29,7 @@ export default function MyColorInput(props: CustomInputProps) {
 
 	return (
 		<Box>
-			<Text fz="sm" fw="500" mb="4">
-				Warna {value} {defaultValue}
-			</Text>
+			<Input.Label mb="4">Warna</Input.Label>
 			<Group gap="xs" justify="center">
 				{TEMPLATE_COLOR_LIST.map((e) => (
 					<ColorSwatch

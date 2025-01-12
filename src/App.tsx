@@ -29,7 +29,8 @@ export default function AppProvider({ children }: { children: ReactNode }) {
 			<Notifications position={isMobile ? 'bottom-center' : 'top-right'} />
 			<SWRConfig
 				value={{
-					fetcher: (url: string) => fetcher.get(url).then((e) => e.data),
+					fetcher: (url: string) =>
+						fetcher.get(url).then(({ data }) => data.data),
 				}}
 			>
 				{children}

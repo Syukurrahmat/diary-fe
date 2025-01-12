@@ -9,9 +9,7 @@ export const PASSWORD_REQUIREMENTS = [
 	{ re: /[A-Z]/, label: 'Mengandung Huruf Besar' },
 ];
 
-export default function PasswordInputWithStrengthMeter(
-	props: CustomInputProps
-) {
+export default function MyPasswordInput(props: CustomInputProps) {
 	const [popoverOpened, setPopoverOpened] = useState(false);
 	const [value, setValue] = useState(props.defaultValue || '');
 
@@ -24,7 +22,12 @@ export default function PasswordInputWithStrengthMeter(
 	const color = strength === 100 ? 'teal' : strength > 50 ? 'yellow' : 'red';
 
 	return (
-		<Popover opened={popoverOpened} position="bottom" width="target">
+		<Popover
+			opened={popoverOpened}
+			transitionProps={{ transition: 'pop-top-left' }}
+			shadow="sm"
+			width="target"
+		>
 			<Popover.Target>
 				<div
 					onFocusCapture={() => setPopoverOpened(true)}
@@ -36,6 +39,7 @@ export default function PasswordInputWithStrengthMeter(
 						autoComplete="new-password"
 						label="Kata Sandi"
 						value={value}
+						error={props.error}
 						onChange={(event) =>
 							handleOnChange(event.currentTarget.value)
 						}
@@ -44,7 +48,7 @@ export default function PasswordInputWithStrengthMeter(
 			</Popover.Target>
 			<Popover.Dropdown>
 				<Progress color={color} value={strength} size={5} mb="xs" />
-				 
+
 				{PASSWORD_REQUIREMENTS.map((requirement, index) => (
 					<PasswordRequirement
 						key={index}

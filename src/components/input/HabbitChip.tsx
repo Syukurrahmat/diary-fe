@@ -28,7 +28,7 @@ export function HabbitChip({ color, icon, value, label }: HabbitChip) {
 			>
 				{icon}
 			</ActionIcon>
-			<Text className={style.label} size="sm" fw="500" children={label} />
+			<Text className={style.label} ta='center' lineClamp={1} size="sm" fw="500" children={label} />
 		</Checkbox.Card>
 	);
 }

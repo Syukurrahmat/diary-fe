@@ -1,37 +1,64 @@
-import { Button, Group, Modal, Stack, TextInput } from '@mantine/core'; //prettier-ignore
+import { Button } from '@mantine/core'; //prettier-ignore
 import { useForm } from '@mantine/form';
 import { PlusIcon } from 'lucide-react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useModelDiscloure } from '../../../lib/hooks';
+import { mutate } from 'swr';
+import { useModalDiscloure } from '../../../lib/hooks';
+import { useAppContext } from '../../../lib/useAppContext';
 import { getRandomItem } from '../../../lib/utils';
-import modalStyles from '../../../styles/myModal.module.css';
 import { ICON_LIST } from '../../IconList.';
-import MyColorInput, { TEMPLATE_COLOR_LIST } from './ColorInput';
-import { MyIconInput } from './IconInput';
+import { failedToast, successToast } from '../../LoadingToast';
+import { TEMPLATE_COLOR_LIST } from './ColorInput';
+import HabitModal from './HabitModal';
+
+const generateInitialValue = () => ({
+	name: '',
+	color: getRandomItem(TEMPLATE_COLOR_LIST),
+	icon: getRandomItem(ICON_LIST) as string,
+});
 
 export default function CreateHabit() {
-	const [opened, { open }] = useModelDiscloure(false);
+	const [opened, { open }] = useModalDiscloure(false);
 	const navigate = useNavigate();
+	const { fetcher } = useAppContext();
+	const [isSubmiting, setIsSubmiting] = useState(false);
 
 	const form = useForm({
-		initialValues: {
-			name: '',
-			color: getRandomItem(TEMPLATE_COLOR_LIST),
-			icon: getRandomItem(ICON_LIST),
-		},
+		initialValues: generateInitialValue(),
 		onSubmitPreventDefault: 'always',
 		validate: {
 			name: (v) => (v.trim().length <= 0 ? 'Harus Diisi' : null),
 		},
 	});
 
-	const onSubmit = form.onSubmit(async (values) => {
-		// navigate(-1);
-		// setTimeout(() => {
-		// 	form.reset();
-		// }, 250);
+	const resetAndClose = () => {
+		navigate(-1);
+		setTimeout(() => {
+			form.reset();
+			form.setInitialValues(generateInitialValue())
+		}, 250);
+	};
 
-		alert(JSON.stringify(values));
+	const submitHandler = form.onSubmit(async (values) => {
+		setIsSubmiting(true);
+		fetcher
+			.post('/habits', values)
+			.then((e) => {
+				const { data } = e.data;
+				mutate<Habit[]>('/habits', (e) => e && [data, ...e], { revalidate: false}); // prettier-ignore
+				successToast('Berhasil membuat habit baru');
+				resetAndClose();
+			})
+			.catch((e) => {
+				const fieldError = (e.response.data.message || '').split(':');
+				if (fieldError.length == 2) {
+					form.setFieldError(fieldError[0], fieldError[1]);
+					return;
+				}
+				failedToast('Opsss. ada yang salah');
+			})
+			.finally(() => setIsSubmiting(false));
 	});
 
 	return (
@@ -39,37 +66,13 @@ export default function CreateHabit() {
 			<Button onClick={open} leftSection={<PlusIcon />}>
 				Habit Baru
 			</Button>
-			<Modal
+			<HabitModal
 				title="Buat Habit Baru"
+				submitHandler={submitHandler}
+				isSubmiting={isSubmiting}
 				opened={opened}
-				size="lg"
-				transitionProps={{ duration: 250, transition: 'fade-up' }}
-				onClose={() => navigate(-1)}
-				classNames={modalStyles}
-			>
-				<form onSubmit={onSubmit}>
-					<Stack p="md">
-						<TextInput
-							label="Nama habit"
-							key={form.key('name')}
-							{...form.getInputProps('name')}
-						/>
-						<MyIconInput
-							color={form.getValues().color}
-							key={form.key('icon')}
-							{...form.getInputProps('icon')}
-						/>
-						<MyColorInput
-							key={form.key('color')}
-							{...form.getInputProps('color')}
-						/>
-					</Stack>
-					<Group justify="end" className="borderTop" bg="white" p="sm">
-						<Button variant="default" children="Batal" />
-						<Button type="submit" children="Buat" />
-					</Group>
-				</form>
-			</Modal>
+				form={form}
+			/>
 		</>
 	);
 }

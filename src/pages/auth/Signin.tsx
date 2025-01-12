@@ -1,19 +1,17 @@
 import { Alert, Button, Collapse, Group, PasswordInput, Stack, Text, TextInput, Title } from '@mantine/core'; //prettier-ignore
 import { useForm } from '@mantine/form';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { InfoIcon } from 'lucide-react';
 import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../lib/Auth/authContext';
 import { API_URL } from '../../lib/constants';
 
-type SubmitingState = 'idle' | 'loading' | 'fail';
-
 export default function Signin() {
 	const navigate = useNavigate();
 	const { signIn, isAuthenticated } = useAuthContext();
-
-	const [submitingState, setSubmitingState] = useState<SubmitingState>('idle');
+	const [isSubmiting, setIsSubmiting] = useState(false);
+	const [error, setError] = useState<string>();
 
 	const form = useForm({
 		mode: 'uncontrolled',
@@ -21,35 +19,33 @@ export default function Signin() {
 			email: '',
 			password: '',
 		},
-		onValuesChange: () => setSubmitingState('idle'),
+		onValuesChange: () => setError(undefined),
 		validate: {
 			email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
 			password: (value) => (value.trim().length > 1 ? null : 'Harus diisi'),
 		},
 	});
 
-	const onSubmit = form.onSubmit((value) => {
-		setSubmitingState('loading');
+	const onSubmit = form.onSubmit(({ email, password }) => {
+		setIsSubmiting(true);
+		setError(undefined);
 		axios
 			.post(
 				API_URL + '/auth/signin',
-				{
-					email: value.email,
-					password: value.password,
-				},
-				{
-					withCredentials: true,
-				}
+				{ email, password },
+				{ withCredentials: true }
 			)
 			.then((response) => {
 				signIn(response.data.data.accessToken);
 				navigate('/');
-				setSubmitingState('idle');
 			})
-			.catch((e) => {
-				console.log(e);
-				setSubmitingState('fail');
-			});
+			.catch((e: AxiosError) => {
+				console.log(e.response?.data);
+				e.response?.status == 403
+					? setError('Email atau Kata Sandi yang anda masukkan salah')
+					: setError('Opss... Ada yang salah');
+			})
+			.finally(() => setIsSubmiting(false));
 	});
 
 	if (isAuthenticated) return <Navigate to="/" />;
@@ -81,31 +77,26 @@ export default function Signin() {
 				/>
 			</Stack>
 
-			<Collapse in={submitingState == 'fail'}>
+			<Collapse in={!!error}>
 				<Alert
 					mt="md"
 					variant="light"
 					fw="500"
 					withCloseButton
-					onClose={() => setSubmitingState('idle')}
+					onClose={() => setError(undefined)}
 					color="red"
 					icon={<InfoIcon />}
-				>
-					Email atau Kata Sandi yang anda masukkan salah
-				</Alert>
+					children={error}
+				/>
 			</Collapse>
 
 			<Stack mt="md" gap="xs" align="center">
-				<Button
-					loading={submitingState == 'loading'}
-					fullWidth
-					type="submit"
-				>
+				<Button loading={isSubmiting} fullWidth type="submit">
 					Lanjut
 				</Button>
 				<Group gap="0">
 					<Text size="sm">Belum Punya Akun ?</Text>
-					<Link to='/auth/register'>
+					<Link to="/auth/register">
 						<Button variant="subtle" size="compact-sm">
 							Daftar Sekarang
 						</Button>

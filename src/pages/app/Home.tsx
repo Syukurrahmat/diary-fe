@@ -1,4 +1,4 @@
-import { ActionIcon, Affix, Avatar, Center, Container, Group, Paper, rem, Stack, Text, Transition } from '@mantine/core'; //prettier-ignore
+import { ActionIcon, Affix, Avatar, Center, Container, Group, Paper, rem, Stack, Transition } from '@mantine/core'; //prettier-ignore
 import { PlusIcon } from 'lucide-react';
 import useSWR from 'swr';
 import { CameraButton, GaleryButton } from '../../components/input/ImagePickerButton'; //prettier-ignore
@@ -71,7 +71,7 @@ export default function Home() {
 							))
 						) : (
 							<Paper p="xl" withBorder className="fluid-Paper">
-								<Center c='dimmed'>
+								<Center c="dimmed">
 									Anda belum menulis apapun disini, buat sekarang
 								</Center>
 							</Paper>

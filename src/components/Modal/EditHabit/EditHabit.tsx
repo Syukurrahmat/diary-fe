@@ -59,7 +59,9 @@ export default function EditHabit() {
 			.catch(() => failedToast('Opss, ada yang salah. Gagal dihapus'));
 	};
 
-	const editHandler = (id: number) => {};
+	const editHandler = (id: number) => {
+		console.log(id)
+	};
 
 	return (
 		<>

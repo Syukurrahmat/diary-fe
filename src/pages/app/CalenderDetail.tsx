@@ -88,7 +88,7 @@ export default function CalenderDateDetail() {
 							inJournal={false}
 							date={moment(date).format('YYYY-MM-DD')}
 							habits={data?.habits || []}
-							summary={data?.summary}
+							summary={data?.summary || null}
 							radius="md"
 						/>
 						

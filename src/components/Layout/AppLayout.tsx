@@ -1,4 +1,4 @@
-import { AppShell, Box, Center, Container, Group, Loader, Title } from '@mantine/core'; //prettier-ignore
+import { AppShell, Center, Container, Group, Loader, Title } from '@mantine/core'; //prettier-ignore
 import { Calendar, House, Images, MapIcon, RouteIcon, User } from 'lucide-react'; //prettier-ignore
 import { Suspense, useMemo } from 'react';
 import { Outlet, useLocation } from 'react-router-dom'; //prettier-ignore
@@ -30,7 +30,7 @@ export default function AppLayout() {
 	return (
 		<AppShell
 			navbar={{ width: 220, breakpoint: 'sm' }}
-			header={{ height: 50, collapsed: !pinned, offset: false }}
+			header={{ height: 50, collapsed: !pinned }}
 			footer={{ height: 56 }}
 			bg="#f4f4f580"
 			transitionDuration={300}
@@ -43,15 +43,14 @@ export default function AppLayout() {
 			}}
 		>
 			<CreateEntryProvider>
-				<AppShell.Header >
+				<AppShell.Header>
 					<Container size="sm" component={Group} h="100%">
 						<Title size="h3" fw="600">
 							{headerLabelMap.get(location.pathname.split('/')[1])}
 						</Title>
 					</Container>
 				</AppShell.Header>
-				<AppShell.Main>
-					<Box h="50px" />
+				<AppShell.Main style={{}}>
 					<Suspense
 						fallback={
 							<Center flex="1" px="md" mt="30vh">

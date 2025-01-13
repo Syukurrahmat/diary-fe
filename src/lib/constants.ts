@@ -1,1 +1,1 @@
-export const API_URL = 'https://perfect-lucretia-syukur-49c6198f.koyeb.app'
+export const API_URL = 'https://localhost:3000'

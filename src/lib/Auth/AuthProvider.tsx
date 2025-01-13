@@ -12,6 +12,8 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 	const [auth, setAuth, removeAuth] = useCookies(['access']);
 	const [isAuthenticated, setIsAuthenticated] = useState(Boolean(auth.access));
 	const [isLoading, setIsLoading] = useState(true);
+	const [isRefreshing, setIsRefreshing] = useState(false);
+	const [requestQueue, setRequestQueue] = useState<any[]>([]);
 
 	useEffect(() => {
 		if (!auth.access) {
@@ -63,7 +65,19 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 					return Promise.reject(error);
 				}
 
+				if (isRefreshing) {
+					return new Promise((resolve, reject) =>
+						setRequestQueue((e) => [...e, { resolve, reject }])
+					)
+						.then((newToken) => {
+							originalRequest.headers.Authorization = `Bearer ${newToken}`;
+							return myAxios(originalRequest);
+						})
+						.catch((err) => Promise.reject(err));
+				}
+
 				originalRequest._retry = true;
+				setIsRefreshing(true);
 
 				console.log('refreshing');
 
@@ -71,15 +85,31 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 					.then((response) => {
 						const { accessToken } = response.data.data;
 						signIn(accessToken);
+
+						// Jalankan semua request dalam antrean dengan token baru
+						myAxios.defaults.headers.Authorization = `Bearer ${accessToken}`;
+
+						requestQueue.forEach((request) =>
+							request.resolve(accessToken)
+						);
+						setRequestQueue([]);
 						originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+
 						console.log('refreshing success');
 						return myAxios(originalRequest);
 					})
 					.catch((refreshError) => {
 						console.error('Failed to refresh token.', refreshError);
+
+						requestQueue.forEach((request) =>
+							request.reject(refreshError)
+						);
+						setRequestQueue([]);
 						setIsAuthenticated(false);
-						window.location.href = '/auth/signin';
 						return Promise.reject(refreshError);
+					})
+					.finally(() => {
+						setIsRefreshing(false);
 					});
 			}
 		);

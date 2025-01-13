@@ -26,9 +26,10 @@ createRoot(document.getElementById('root')!).render(
 		<WaitFontWrapper>
 			<AuthProvider>
 				<RouterProvider
-					future={{ v7_startTransition: true }}
+					future={{
+						v7_startTransition: true,
+					}}
 					router={router}
-					fallbackElement="qq"
 				/>
 			</AuthProvider>
 		</WaitFontWrapper>

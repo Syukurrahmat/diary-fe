@@ -2,13 +2,7 @@ type JournalItem = {
     id: number
     date: string
     entries: Entry[]
-    habits: {
-        id: number,
-        name: string,
-        icon: string,
-        color: string,
-        deleted: boolean
-    }[]
+    habits: JournalItemHabit[]
     summary: string | null
 }
 
@@ -21,10 +15,10 @@ type CreateEntryForm = {
     tags: string[];
     address?: string,
     coordinate?: MyLatLng
-    section : CreateEntryFormSection
+    section: CreateEntryFormSection
     coordinateEdited: boolean,
     userLocationIsLoading: boolean,
- };
+};
 
 type MyLatLng = {
     lat: number,
@@ -68,7 +62,7 @@ type JournalItemHabit = {
     name: string,
     icon: string,
     color: string,
-    deleted: boolean
+    deletedAt: string | null
 }
 
 type Summary = {
@@ -116,8 +110,8 @@ type Habit = {
 
 
 interface CustomInputProps {
-	value?: string;
-	defaultValue?: string;
-	onChange?: (value: string) => void;
-	error?: string;
+    value?: string;
+    defaultValue?: string;
+    onChange?: (value: string) => void;
+    error?: string;
 }

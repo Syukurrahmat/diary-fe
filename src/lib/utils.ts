@@ -79,3 +79,53 @@ export const getUserLocation = () => {
     });
 };
 
+export const wait = (ms?: number) => new Promise(r => setTimeout(r, ms))
+
+export function scrollToElementWithOffset(element: Element | HTMLDivElement | null, offset = 0) {
+    if (!element) return
+    const rect = element.getBoundingClientRect();
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const targetPosition = rect.top + scrollTop - offset;
+
+    window.scrollTo({
+        top: targetPosition,
+    });
+}
+
+import { useEffect, useRef, useState } from 'react';
+
+interface UseInViewportOptions {
+    root?: HTMLDivElement | null; // Root element to use for intersection checking
+    rootMargin?: string;   // Margin around the root
+    threshold?: number | number[]; // Intersection threshold(s)
+    onVisible?: (entry: IntersectionObserverEntry) => void
+}
+
+export const useOnceInViewport = (
+    options: UseInViewportOptions = {}
+) => {
+    const ref = useRef<HTMLDivElement>(null)
+
+    const [onceInViewport, setIsInView] = useState(false);
+
+    useEffect(() => {
+        const element = ref.current;
+        if (!element) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    if (!onceInViewport) setIsInView(true)
+                    if (options.onVisible) options.onVisible(entry)
+                }
+            },
+            options
+        );
+        observer.observe(element);
+        return () => {
+            observer.disconnect();
+        };
+    }, [options, ref]);
+
+    return { ref, onceInViewport };
+}

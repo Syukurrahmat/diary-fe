@@ -1,10 +1,10 @@
-import { Container, Stack } from '@mantine/core'; //prettier-ignore
-import CalenderPicker from '../../components/Calender/CalenderPicker';
+import { Container } from '@mantine/core';
+import InfiniteCalender from '../../components/Calender/InfiniteCalender';
 
 export default function Calender() {
 	return (
-		<Container component={Stack} py="xs" px='sm' size="sm">
-			<CalenderPicker />
+		<Container py="xs" px={{ base: '0px', xs: 'sm' }} size="sm">
+			<InfiniteCalender />
 		</Container>
 	);
 }

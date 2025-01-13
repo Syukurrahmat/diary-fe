@@ -2,6 +2,7 @@
 
 body {
     overflow-y: scroll !important;
+    overflow-anchor: auto;
 }
 
 .radius-md {
@@ -73,8 +74,18 @@ nav.mobile a:not([aria-current="page"]) {
     background-color: alpha(var(--color), 0.1);
 }
 
- 
 
-.dragged{
+
+.dragged {
     z-index: 10000;
+}
+
+
+.containerxxx {
+    overscroll-behavior-y: contain;
+    scroll-snap-type: y mandatory;
+}
+
+.containerxxx>div:last-child {
+    scroll-snap-align: end;
 }
